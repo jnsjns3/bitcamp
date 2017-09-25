@@ -6,6 +6,9 @@ public class Test10_2{
 
     System.out.println("Hello!");
 
+    long currmillis = System.currentTimeMillis();
+
+    System.out.println(currmillis);
    }
 
 }
