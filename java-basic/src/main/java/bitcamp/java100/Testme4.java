@@ -15,7 +15,7 @@ public class Testme4{
     this.name = name;
     this.money = mon;
     
-    void conju
+    
    }
    
   

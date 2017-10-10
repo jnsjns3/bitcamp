@@ -10,6 +10,8 @@
 apply plugin: 'java'
 
 
+
+
 compileJava{
   options.encoding = 'UTF-8'
 }
@@ -17,8 +19,37 @@ javadoc {
     options.encoding = "UTF-8"
 }
 
+
+
+
+
 // Apply the application plugin to add support for building an application
 apply plugin: 'application'
+apply plugin: 'eclipse'
+
+eclipse {
+  jdt {
+    //if you want to alter the java versions (by default they are configured with gradle java plugin settings):
+    sourceCompatibility = 9
+    targetCompatibility = 9
+    javaRuntimeName = "JavaSE-9"
+
+    file {
+      
+      whenMerged { jdt
+      }
+
+      
+      withProperties { properties ->
+      properties["org.eclipse.jdt.core.compiler.compliance"]="9"
+      properties["org.eclipse.jdt.core.compiler.codegen.targetPlatform"]="9"
+      properties["org.eclipse.jdt.core.compiler.source"]="9"
+      
+      }
+    }
+  }
+}
+
 
 // In this section you declare where to find the dependencies of your project
 repositories {
