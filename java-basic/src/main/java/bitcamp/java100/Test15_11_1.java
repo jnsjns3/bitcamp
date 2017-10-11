@@ -20,7 +20,7 @@ public class Test15_11_1{
            boolean otherRead;
            boolean otherWrite;
            boolean otherExe;
-           int a;
+          
            
            
        }
