@@ -1,27 +1,33 @@
 package bitcamp.java100;
 
-
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.Buffer;
+import java.util.Scanner;
 
 public class app{
-    
+    static Scanner read; 
+    static PrintWriter pr;
     
     public static void main(String[] args) {
-     
-        String[] arr = {"이순신","임꺽정","유관순"};
-        int[] kor = {100,100,20};
-        int[] eng = {80,80,90};
-        int[] math = {100,70,90};
-
-        int sum;
-        float ave;
-
-        for(int i=0; i<arr.length; i++){
+        String str = "Hello world!!";
+      
+        try {
+            read = new Scanner(new File("C:\\Users\\bit-user\\Desktop\\new\\out.txt"));
+           
+            String st = read.nextLine();
         
-        sum = kor[i]+eng[i]+math[i];
-        ave = sum/3;
-        System.out.printf("%-4s, 4%d, 4%d, %4d, %4d, %4.1f\n",
-        arr[i], kor[i], eng[i], math[i], sum, ave);
+        
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.out.println("에러");
         }
-
+        
+        
     }
 }

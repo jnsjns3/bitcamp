@@ -1,46 +1,57 @@
 package bitcamp.java100;
 
-import java.util.ArrayList;
-import java.util.Scanner;
-
-import bitcamp.java100.Testme4.Student;
 
 public class Testme9{
-    
-    String name;
-    int su;
-    int sa=100;
-    public static void Testme9(int sa){
-        Scanner sc = new Scanner(System.in);
-       
-       
-        int cho;
-        int a = sa+100;
-        
-        System.out.println(a);
-        sa = a;
-        
-        System.out.println("또 반복하시겠습니까? 1.예, 2.아니오");
-        cho = sc.nextInt();
-        ArrayList<Integer> arr = new ArrayList<>();
-        arr.add(sa);
-        
-        
-        
-        switch (cho) {
-        case 1: Testme9(sa);
-        case 2: Testme10.main(null);
-        default:
-            break;
-        }
-            
-        
-        
-        
-        
+    static class Score{
+        String name;
+        int kor;
+        int eng;
+        int maht;
+        int sum;
+        float aver;
     }
+   
     
     
+    public static void main(String[] args) {
+       
+      Score s1 = new Score();
+      
+      s1.name = "홍길동";
+      s1.kor = 99;
+      s1.eng = 100;
+      s1.maht = 100;
+      s1.sum = s1.kor + s1.eng + s1.maht;
+      s1.aver = s1.sum / 3f;
+      
+      Score s2 = new Score();
+      
+      s2.name = "임꺽정";
+      s2.kor = 100;
+      s2.eng = 70;
+      s2.maht = 50;
+      s2.sum = s2.kor + s2.eng + s2.maht;
+      s2.aver = s2.sum / 3f;
+      
+      Score s3 = createScore("유관순", 100, 100, 100);
+      Score s4 = createScore("안중근", 90, 90, 90);
+      Score s5 = createScore("윤봉길", 80, 80, 80); 
+      
+      
+}
+ static Score createScore(String name, int kor, int eng, int math) {
+        
+        Score s = new Score();
+        
+        s.name = name;
+        s.kor = kor;
+        s.eng = eng;
+        s.maht = math;
+        s.sum = kor+eng+math;
+        s.aver = s.sum / 3f;
+        
+        return s;
     
-    
+    }
+   
 }

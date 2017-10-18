@@ -6,39 +6,40 @@ import java.util.Scanner;
 import bitcamp.java100.Testme4.Student;
 
 public class Testme10{
+
+    static class Score{
     
+        String name;
+        int age;
    
+     
+   static Score Create(String name, int age) {
+       
+       Score sc = new Score();
+       sc.name = name;
+       sc.age = age;
+       
+       return sc;
+       
+   }
+   
+  }
+    
     public static void main(String[] args) {
-       
-        
-        
-        Scanner sc = new Scanner(System.in);
-        int sa;
-        int b;
-        int cho;
-       
-        
-        System.out.println("----------메뉴------------");
-        System.out.println("1.입금   2.조회");
-        cho = sc.nextInt();
-        switch (cho) {
-        case 1: System.out.println("얼마 입금할래요?"); 
-        
-        int ss = sc.nextInt();
-        Testme9_1 te = new Testme9_1(ss);
-        
-        
-        case 2: 
-       System.out.println(te.su);
             
-        default:
-            break;
+        Score[] sc = new Score[2];
+        for(int i=0; i < sc.length; i++) {
+            sc[i] = new Score();
+            
+        }
+        sc[0].age = 20;
+        sc[0].name = "민수";
+        
+        for(int i=0; i < sc.length; i++) {
+            System.out.println(sc[i].age);
         }
         
-       main(args); 
-        
-        
-        
+    }
         
         
         
@@ -52,7 +53,6 @@ public class Testme10{
         
       
       
-    }
     
     
 }
