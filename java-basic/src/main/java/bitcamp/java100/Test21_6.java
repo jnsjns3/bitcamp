@@ -18,7 +18,20 @@ public class Test21_6{
         for(; v > 0; v /= 10) {
             System.out.printf("%d " ,v%10);
         } 
+        System.out.println();
         
+        String str = console.readLine("문자열?");
+        StringBuffer buf = new StringBuffer();
+        buf.append(str);
+        int len = buf.length()/ 2;
+        
+       for(int left = 0, right = buf.length()-1; left < len; left++, right--) {
+           char ch = buf.charAt(left);
+           buf.setCharAt(left, buf.charAt(right));
+           buf.setCharAt(right, ch);
+       }
+        System.out.println("입력 문자열"+str);
+        System.out.println("변경 문자열"+buf);
         
     }
   

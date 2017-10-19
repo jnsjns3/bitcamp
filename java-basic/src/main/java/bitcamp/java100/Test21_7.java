@@ -4,62 +4,64 @@ import java.io.Console;
 import java.util.Scanner;
 //연습문제 2 : 거꾸로 출력!
 
+import javax.swing.plaf.metal.OceanTheme;
+
 // 이름, 이메일, 전화번호를 입력받는다.
 // 저장하시겠습니까?(y/n)
 // 저장하였습니다.
 // 계속입력하시겠습니까?(y/n)
 public class Test21_7{
     
-    static class Mamber {
-        
+    static class Contact{
         String name;
-        String email;
-        String number;
-        public Mamber(String name, String email, String number) {
-            this.name = name;
-            this.email = email;
-            this.number = number;
-            
-        }
+        String eamil;
+        String tel;
+        
+        
         
     }
-    
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
     
         
-        
-        Scanner sc = new Scanner(System.in);
         Console console = System.console();
         
+        Contact[] contatcts = new Contact[100];
         
-        Mamber[] mam = new Mamber[3];
         
-        for(int i=0; i < mam.length; i++) {
-            mam[i] = new Mamber(console.readLine("이름:"), console.readLine("Email:"), console.readLine("전화번호:"));
-        
-        String s1 = console.readLine("저장하시겠습니까? (y/n)");
-        if(s1.equals("n")) {
-         mam[i].name = "저장안됨";
-         mam[i].email = "저장안됨";
-         mam[i].number = "저장안됨";
+        int cursor = 0;
+        while(cursor < contatcts.length) {
+            Contact contact = new Contact();
+            
+            contact.name = console.readLine("이름?");
+            contact.eamil = console.readLine("이메일?");
+            contact.tel = console.readLine("전화번호?");
+            
+            String response = console.readLine("저장하시겠습니까?");
+            if(response.toLowerCase().equals("y") || 
+               response.toLowerCase().equals("yes")) {
+               //이름 이메일 전화 데이터가 저장된 인스턴스 주소를 배열에 저장
+                contatcts[cursor] = contact;
+            
+               cursor++;    
+                    }
+           
+            response = console.readLine("계속 입력하시겠습니까? (y/n)");
+            
+            if(!(response.toLowerCase().equals("y") || 
+                response.toLowerCase().equals("yes"))) {
+                break;
+            }
+            
         }
         
-        String s2 = console.readLine("계속입력 하시겠습니까?(y/n)");
-        if(s2.equals("n")) {
-            System.exit(1);
+       for(int i=0; i < cursor; i++) {
+            System.out.printf("%s, %s, %s\n",contatcts[i].name,
+                                             contatcts[i].eamil,
+                                             contatcts[i].tel);
+            
+       
         }
        
-        
-        
-        
-        }
-        
-        System.out.println(mam[0].name+"   "+mam[0].email+"  "+mam[0].number);
-        System.out.println(mam[1].name+"   "+mam[1].email+"  "+mam[1].number);
-        System.out.println(mam[2].name+"   "+mam[2].email+"  "+mam[2].number);
-               
-            
-        
     
         
         
