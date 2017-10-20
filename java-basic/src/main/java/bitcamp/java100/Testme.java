@@ -1,6 +1,7 @@
 package bitcamp.java100;
 
 import java.io.Console;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Testme{
@@ -29,7 +30,6 @@ public class Testme{
             mem[i] = memr;    
             i++;
         }
-        
         s1 = console.readLine("계속 입력 하시겠습니까? (y/n)");
         if(s1.equals("n")) {
             break;
@@ -39,7 +39,7 @@ public class Testme{
     
     
     for(int j=0; j < i; j++) {
-        System.out.println(mem[j].name +" "+ mem[j].emaile +" "+ mem[j].num);
+        System.out.printf("%s, %s, %s\n" ,mem[j].name,mem[j].emaile,mem[j].num);
     }
     
     
