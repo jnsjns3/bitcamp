@@ -18,7 +18,7 @@ public class Test21_3{
       float gpa;
       
       name = console.readLine("예:(홍길동)");
-      age = Integer.parseInt(console.readLine("예:(나이)")); 
+      age = Integer.parseInt(console.readLine("예:(나이)"));  
       working = Boolean.parseBoolean(console.readLine("예:true or flase"));
       gpa = Float.parseFloat(console.readLine("예: 3.5"));
       

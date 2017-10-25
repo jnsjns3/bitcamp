@@ -31,6 +31,7 @@ public class Test21_8{
             System.out.printf("%d = %d\n", x, arr[x]);
             x++;
         }  
+        
     }
     
     
