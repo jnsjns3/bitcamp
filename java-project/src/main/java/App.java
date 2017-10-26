@@ -27,12 +27,12 @@ public class App {
     
     public static void main(String[] args) {
         // Score 설계도에 따라 메모리를 준비한다.
+        
         Scanner sc = new Scanner(System.in);
         ScoreDao scoreDao = new ScoreDao();
         while(true) {
             Score score = new Score();
             score.input();
-            
             
             scoreDao.add(score);
            
