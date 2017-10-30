@@ -16,10 +16,11 @@ apply plugin: 'eclipse'
 eclipse {
   jdt {
     //if you want to alter the java versions (by default they are configured with gradle java plugin settings):
-    sourceCompatibility = 9
-    targetCompatibility = 9
-    javaRuntimeName = "JavaSE-9"
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+    javaRuntimeName = "JavaSE-1.8"
 
+    /*
     file {
       
       whenMerged { jdt
@@ -33,8 +34,10 @@ eclipse {
       
       }
     }
+    */
   }
 }
+
 
 
 compileJava{
