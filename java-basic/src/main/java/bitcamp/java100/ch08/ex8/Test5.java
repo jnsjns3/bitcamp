@@ -26,6 +26,5 @@ public class Test5 {
         m1("aaa", 10);
     
         
-        
     }
 }
