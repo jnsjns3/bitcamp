@@ -20,6 +20,7 @@ public class Test1 {
         list.add("안중근");
         list.add("윤봉길");
         
+        list.insert(1, "Jang");
         pirntList(list);
        
        

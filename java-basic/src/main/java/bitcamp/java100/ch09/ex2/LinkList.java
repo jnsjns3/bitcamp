@@ -61,7 +61,7 @@ public class LinkList {
             pre = pre.next;
         }
         box.next = pre.next;
-        pre.next = box;
+        pre.next = box; 
        
     }
     
