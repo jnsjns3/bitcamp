@@ -1,13 +1,13 @@
-package java100.app;
+package backup;
 
-public class ArrayList {
+public class ArrayList<T> {
 
-    Object[] list = new Object[100];
-    int cursor = 0;
+    private Object[] list = new Object[100];
+    private int cursor = 0;
     
     
     //파라미터로 모든 타입의 객체 주소를 받을 수 있게 전환한다.
-    void add(Object obj) {
+    void add(T obj) {
         if(this.cursor == this.list.length) {
             
             System.out.println("저장개수 초과");
@@ -21,11 +21,12 @@ public class ArrayList {
     }
     
     
-    Object get(int index) {
+    @SuppressWarnings("unchecked")
+    T get(int index) {
         if(index < 0 || index >= this.cursor) {
             return null;
         }
-        return this.list[index];
+        return (T)this.list[index];
     }
     
 }

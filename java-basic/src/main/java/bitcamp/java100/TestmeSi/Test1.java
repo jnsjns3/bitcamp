@@ -11,14 +11,15 @@ public class Test1 {
         list.add("홍길동");
         list.add("안중근");
         list.add("이순신");
+        list.add("장길산");
         
         
-        System.out.println(list.head.value);
-        
-        System.out.println(list.head.next.value);
-        System.out.println(list.tail.value);
-        
-       System.out.println(list.get(0));
+        list.delete(2);
+        System.out.println(list.get(0));
+        System.out.println(list.get(1));
+       System.out.println(list.get(2));
+      
+       
         
     }
     
