@@ -1,4 +1,4 @@
-package java100.app;
+package myTest3;
 import java.util.Scanner;
 
 //: ## 생성자와 인스턴스 메서드 도입
@@ -14,7 +14,7 @@ public class Score {
     protected int[] subjects; 
     protected int sum;
     protected float aver;
-
+    
     
     //: ### 생성자 
     // public으로 공개한다. 다른 패키지에서도 호출할수 있도록 변경!
@@ -68,7 +68,17 @@ public class Score {
         
         
     }
-    
+    static boolean confirm2(String message) {
+        Scanner sc = new Scanner(System.in);
+        System.out.println(message);
+        String response = sc.nextLine().toLowerCase();
+        
+        if(response.equals("n") || response.equals("no") || response.equals("") ) {
+            return false;
+        }
+            return true;
+        
+    }
     public void input() {
         Scanner sc = new Scanner(System.in);
         System.out.println("이름?");
@@ -107,7 +117,7 @@ public class Score {
         }catch (Exception e) {
         }
         
-        if(Prompts.confirm2("변경 하시겠습니까?(y/N) ")) {
+        if(confirm2("변경 하시겠습니까?(y/N) ")) {
             this.subjects[0] = kor;
             this.subjects[1] = eng;
             this.subjects[2] = math;

@@ -1,49 +1,39 @@
-package java100.app;
+package myTest3;
 import java.util.Scanner;
 
 // 요구사항
 /*
- 게시판> add
- 번호? 1
- 제목? aaa
- 내용? aaaa
- 날짜
- 
+ 회원관리> add
+ 이름? 홍길동
+ 이메일? hong@test.com
+ 암호? 111
+ 이미 등록된 이메일입니다.
  입력하였습니다.
  
- 회원관리> add
- 번호? 1
- 이미 등록된 번호입니다.
+ 회원관리> list
+ 홍길동, hong@test.com
  
- 성적관리> list
-1, aaa, 2017-11-3, 0(조회수)
-2, bbb, 2017-11-3, 2
+ 성적관리> view
+ 이메일 ? hong@test.com
+ hong@test.com의 회원정보가 없습니다
 
-성적관리> view
-번호? 1
-제목: aaa
-내용: aaaa
-등록일: 2017-11-3
-조회수: 1
-9번 게시물이 없습니다.
+ 성적관리> delete
+ 이메일? hong@test.com
+ hong@test.com의 회원정보가 없습니다
 
-성적관리>delete
- 번호 ? 1
- 삭제하시겠습니까?
+ 성적관리>update
+ 이메일? hong@test.com
+ 이름?(홍길동) 홍길동2
+ 암호?(1111) 2222
+ 변경하시겠씁니까? (y/n)
  
-성적관리>update
-번호? 1
-제목?(aaa) xxx <= 원래 값 유지
-내용: 222 <= 그냥 입력하지 않고 엔터치면 빈 문자열이 내용이 된다.
-날짜 <= 등록일을 현재 날짜 및 시각으로 바꿔라
+
  */
 
 
 public class App {
     static Scanner sc = new Scanner(System.in);
     static ScoreController scoreController = new ScoreController();
-    static Membercontroller memberController = new Membercontroller();
-    static BordController bordController = new BordController();
     
     public static void main(String[] args) {
        
@@ -90,10 +80,10 @@ public class App {
             
         case "2":
             
-            memberController.excute();
-            break;
+            scoreController.excute2(); break;
+            
         case "3":
-            bordController.excute();
+            System.out.println("게시판");
             break;
         default:
             System.out.println("메뉴번호가 잘못되었습니다.");

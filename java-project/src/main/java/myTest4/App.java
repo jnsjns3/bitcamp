@@ -1,4 +1,4 @@
-package java100.app;
+package myTest4;
 import java.util.Scanner;
 
 // 요구사항
@@ -93,7 +93,7 @@ public class App {
             memberController.excute();
             break;
         case "3":
-            bordController.excute();
+           bordController.excute();
             break;
         default:
             System.out.println("메뉴번호가 잘못되었습니다.");
