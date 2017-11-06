@@ -1,16 +1,28 @@
-package java100.app;
+package java100.app.util;
 
 import java.util.Scanner;
 
 public class Prompts {
 
-    
+    static Scanner sc = new Scanner(System.in);
+    @Deprecated
    public static String input(String message) {
         
     Scanner sc = new Scanner(System.in);
         System.out.println(message);
         return sc.nextLine();
         
+    }
+   
+   
+    public static int inputInt(String message, Object...values) {
+        System.out.printf(message, values);
+        return Integer.parseInt(sc.nextLine());
+    }
+    
+    public static String inputString(String message, Object...values) {
+        System.out.printf(message, values);
+        return sc.nextLine();
     }
 
    public static boolean confirm(String message) {

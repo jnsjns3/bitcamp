@@ -1,52 +1,46 @@
 package java100.app;
+import java.util.HashMap;
 import java.util.Scanner;
+
+import java100.app.controll.BordController;
+import java100.app.controll.GenericController;
+import java100.app.controll.Membercontroller;
+import java100.app.controll.Roomcontroller;
+import java100.app.controll.ScoreController;
+import java100.app.domain.Bord;
+import java100.app.domain.Member;
+import java100.app.domain.Room;
+import java100.app.domain.Score;
 
 // 요구사항
 /*
- 게시판> add
- 번호? 1
- 제목? aaa
- 내용? aaaa
- 날짜
- 
- 입력하였습니다.
- 
- 회원관리> add
- 번호? 1
- 이미 등록된 번호입니다.
- 
- 성적관리> list
-1, aaa, 2017-11-3, 0(조회수)
-2, bbb, 2017-11-3, 2
+강의실(지역, 강의실번호, 수용인원) 관리 기능을 추가한다.
+1) Room 클래스 정의
 
-성적관리> view
-번호? 1
-제목: aaa
-내용: aaaa
-등록일: 2017-11-3
-조회수: 1
-9번 게시물이 없습니다.
-
-성적관리>delete
- 번호 ? 1
- 삭제하시겠습니까?
- 
-성적관리>update
-번호? 1
-제목?(aaa) xxx <= 원래 값 유지
-내용: 222 <= 그냥 입력하지 않고 엔터치면 빈 문자열이 내용이 된다.
-날짜 <= 등록일을 현재 날짜 및 시각으로 바꿔라
  */
 
 
 public class App {
     static Scanner sc = new Scanner(System.in);
+    
+    static HashMap<String, GenericController<?>> controllerMap = 
+            new HashMap<>();
+    
+    
     static ScoreController scoreController = new ScoreController();
     static Membercontroller memberController = new Membercontroller();
     static BordController bordController = new BordController();
     
     public static void main(String[] args) {
        
+        controllerMap.put("1", new ScoreController());
+        controllerMap.put("2", new Membercontroller());
+        controllerMap.put("3", new BordController());
+        
+        //GenericController는 추상 클래스 이기 떄문에
+        //인스턴스를 생성할 수 없다.
+        controllerMap.put("4", new Roomcontroller());
+        
         loop:
         while(true) {
             System.out.println("명령>");
@@ -85,20 +79,14 @@ public class App {
      private static void doGo(String menuNO) {
          
         
-         switch (menuNO) {
-        case "1": scoreController.excute(); break;
-            
-        case "2":
-            
-            memberController.excute();
-            break;
-        case "3":
-            bordController.excute();
-            break;
-        default:
-            System.out.println("메뉴번호가 잘못되었습니다.");
-            break;
-        }
+         GenericController<?> controller = controllerMap.get(menuNO);
+         if(controller == null) {
+             System.out.println("해당 번호의 메뉴가 없습니다.");
+             return;
+         }
+         controller.excute();
+         
+         
     }
 
    
