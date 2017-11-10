@@ -1,12 +1,66 @@
 package java100.app.controll;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.Scanner;
 
 import java100.app.domain.Member;
 import java100.app.util.Prompts;
 
 public class Membercontroller extends GenericController<Member> {
     
+    private String dataFilePath;
+    
+    
+    
+    public Membercontroller(String dataFilePath) {
+        this.dataFilePath = dataFilePath;
+        this.init();
+    }
+    
+    @Override
+    public void destroy() {
+        
+        
+        try (FileWriter out = new FileWriter(this.dataFilePath);){
+            
+            
+            for(Member member : this.list) {
+                out.write(member.toCSVString() + "\n");
+            }
+            
+           
+        } catch (IOException e) {
+            e.printStackTrace();
+        
+        }
+        
+    }
+    @Override
+    public void init() {
+        try(FileReader in = new FileReader(this.dataFilePath);
+            Scanner sc = new Scanner(in);    
+                ) {
+            
+            String csv = null;
+            while(sc.hasNextLine()) {
+              csv = sc.nextLine();  
+             
+                try {
+                    list.add(new Member(csv));
+                } catch (CSVFormatException e) {
+                    System.err.println("CSV 데이터 형식 오류!");
+                    e.printStackTrace();
+                }
+            
+            
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+}
     
     
     @Override
@@ -43,6 +97,7 @@ public class Membercontroller extends GenericController<Member> {
             }
     
     }
+     
     private void doList(){
         System.out.println("[회원 목록]");
         Iterator<Member> iterator;

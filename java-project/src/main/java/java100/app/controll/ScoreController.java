@@ -1,12 +1,69 @@
 package java100.app.controll;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Iterator;
+import java.util.Scanner;
 
 import java100.app.domain.Score;
 import java100.app.util.Prompts;
 
 public class ScoreController extends GenericController<Score> {
 
+    private String dataFilePath;
+    
+    public ScoreController(String dataFilePath) {
+        this.dataFilePath = dataFilePath;
+        this.init();
+        
+        
+    }
+    
+    //Arraylist에 보관된 데이터를 score.txt 파일에 저장한다.
+    //저장방식은 CSV 방식을 사용한다.
+    @Override
+    public void destroy() {
+        
+      
+        try (FileWriter out = new FileWriter(this.dataFilePath);){
+            
+            
+            for(Score score : this.list) {
+                out.write(score.toCSVString() + "\n");
+            }
+            
+           
+        } catch (IOException e) {
+            e.printStackTrace();
+        
+        }
+        
+    }
+    @Override
+    public void init() {
+        try(FileReader in = new FileReader(this.dataFilePath);
+            Scanner sc = new Scanner(in);    
+                ) {
+            
+            String csv = null;
+            while(sc.hasNextLine()) {
+              csv = sc.nextLine();  
+             
+                try {
+                    list.add(new Score(csv));
+                } catch (CSVFormatException e) {
+                    System.err.println("CSV 데이터 형식 오류!");
+                    e.printStackTrace();
+                }
+            
+            
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+} 
+    
     
     @Override
     public void excute() {
@@ -134,7 +191,7 @@ public class ScoreController extends GenericController<Score> {
             score.setEng(Prompts.inputInt("영어? "));
             score.setMath(Prompts.inputInt("수학? "));
             
-            
+            list.add(score);
          
    }
     

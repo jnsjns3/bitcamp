@@ -1,6 +1,6 @@
 package java100.app.domain;
 
-import java.util.Scanner;
+import java100.app.controll.CSVFormatException;
 
 public class Member {
 
@@ -18,10 +18,29 @@ public class Member {
         
     }
     
+    public Member(String csv) throws CSVFormatException {
+        String[] rec = csv.split(",");
+        if(rec.length != 3) 
+           throw new CSVFormatException("CSV 데이터 항목의 개수가 올바르지 않습니다.");
+        
+        this.name = rec[0];
+        this.email = rec[1];
+        this.password = rec[2];
+        
+        
+    }
+    public String toCSVString() {
+        return String.format("%s,%s,%s", 
+                this.getName(),
+                this.getEmail(),
+                this.getPassword());
+    }
     @Override
     public String toString() {
         return "Member [name=" + name + ", email=" + email + ", password=" + password + "]";
     }
+    
+    
     
     public String getName() {
         return name;
@@ -43,17 +62,6 @@ public class Member {
     }
     
     
-    public void input() {
-        
-      
-        
-    }
-    
-    
-    public void update() {
-        
-        
-        
-    }
+   
     
 }

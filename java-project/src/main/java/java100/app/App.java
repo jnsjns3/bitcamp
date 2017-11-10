@@ -1,8 +1,10 @@
 package java100.app;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Scanner;
 
 import java100.app.controll.BordController;
+import java100.app.controll.Controller;
 import java100.app.controll.GenericController;
 import java100.app.controll.Membercontroller;
 import java100.app.controll.Roomcontroller;
@@ -23,23 +25,22 @@ import java100.app.domain.Score;
 public class App {
     static Scanner sc = new Scanner(System.in);
     
-    static HashMap<String, GenericController<?>> controllerMap = 
+    //이제 HashMap에 보관하는 값은 Controller 규칙을 준수한 객체이다.
+    static HashMap<String, Controller> controllerMap = 
             new HashMap<>();
     
     
-    static ScoreController scoreController = new ScoreController();
-    static Membercontroller memberController = new Membercontroller();
-    static BordController bordController = new BordController();
+    
     
     public static void main(String[] args) {
        
-        controllerMap.put("1", new ScoreController());
-        controllerMap.put("2", new Membercontroller());
-        controllerMap.put("3", new BordController());
+        controllerMap.put("1", new ScoreController("./data/scroe.csv"));
+        controllerMap.put("2", new Membercontroller("./data/member.csv"));
+        controllerMap.put("3", new BordController("./data/bord.csv"));
         
-        //GenericController는 추상 클래스 이기 떄문에
-        //인스턴스를 생성할 수 없다.
-        controllerMap.put("4", new Roomcontroller());
+        // Roomcontroller는 GenericController를 상속 받지 않았따.
+        // 그래서 controllerMap에 저장할 수 없다.
+        controllerMap.put("4", new Roomcontroller("./data/room.csv")); //ok!
         
         loop:
         while(true) {
@@ -79,7 +80,7 @@ public class App {
      private static void doGo(String menuNO) {
          
         
-         GenericController<?> controller = controllerMap.get(menuNO);
+         Controller controller = controllerMap.get(menuNO);
          if(controller == null) {
              System.out.println("해당 번호의 메뉴가 없습니다.");
              return;
@@ -112,7 +113,12 @@ public class App {
     }
 
     private static void doQuite() {
-         System.out.println("프로그램을 종료합니다!");
+        Collection<Controller> controls = controllerMap.values();
+        for(Controller control : controls) { 
+         control.destroy(); //각 컨트롤러에게 마무리 기회를 준다.
+        }
+        
+        System.out.println("프로그램을 종료합니다!");
          
     }
 

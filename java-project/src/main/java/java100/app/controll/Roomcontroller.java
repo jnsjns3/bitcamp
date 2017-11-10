@@ -1,11 +1,69 @@
 package java100.app.controll;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Scanner;
 
 import java100.app.domain.Room;
+import java100.app.domain.Score;
 import java100.app.util.Prompts;
 
-public class Roomcontroller extends GenericController<Room> {
+public class Roomcontroller extends ArrayList<Room> implements Controller {
+    
+    Scanner sc = new Scanner(System.in);
+    
+    private String dataFilePath;
+    
+    public Roomcontroller(String dataFilePath) {
+        this.dataFilePath = dataFilePath;
+        this.init();
+    }
+    
+    @Override
+    public void destroy() {
+        
+      
+        try (FileWriter out = new FileWriter(dataFilePath);){
+            
+            
+            for(Room room : this) {
+                out.write(room.toCSVString() + "\n");
+            }
+            
+           
+        } catch (IOException e) {
+            e.printStackTrace();
+        
+        }
+        
+    }
+    @Override
+    public void init() {
+        try(FileReader in = new FileReader(dataFilePath);
+            Scanner sc = new Scanner(in);    
+                ) {
+            
+            String csv = null;
+            while(sc.hasNextLine()) {
+              csv = sc.nextLine();  
+             
+                try {
+                    this.add(new Room(csv));
+                } catch (CSVFormatException e) {
+                    System.err.println("CSV 데이터 형식 오류!");
+                    e.printStackTrace();
+                }
+            
+            
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+} 
+    
     
     @Override
     public void excute() {
@@ -39,7 +97,7 @@ public class Roomcontroller extends GenericController<Room> {
     private void doList(){
         System.out.println("[강의실 목록]");
         Iterator<Room> iterator;
-        iterator = list.iterator();
+        iterator = this.iterator();
         while(iterator.hasNext()) {
             Room room = iterator.next();
             System.out.printf("%s, %s, %d\n", room.getLocation(), room.getName(), room.getCapacity());
@@ -59,7 +117,7 @@ public class Roomcontroller extends GenericController<Room> {
         
         room.setLocation(Prompts.inputString("지역??"));
         room.setCapacity(Prompts.inputInt("수용인원? "));
-        list.add(room);
+        this.add(room);
             
             
           
@@ -77,7 +135,7 @@ public class Roomcontroller extends GenericController<Room> {
            return;
         }
             if(Prompts.confirm2("정말 삭제 하시겠습니까?(y/n)")) {
-                list.remove(room);
+                this.remove(room);
             }else {
                 System.out.println("삭제를 취소하였습니다.");
             }
@@ -90,7 +148,7 @@ public class Roomcontroller extends GenericController<Room> {
     private Room find(String roomName) {
         Iterator<Room> iterator;
         
-        iterator = list.iterator();
+        iterator = this.iterator();
         while(iterator.hasNext()) {
             Room room = iterator.next();
             if(room.getName().equals(roomName)) {

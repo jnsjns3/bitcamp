@@ -1,5 +1,8 @@
 package java100.app.controll;
 
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,12 +10,60 @@ import java.util.Scanner;
 import java.util.concurrent.BrokenBarrierException;
 
 import java100.app.domain.Bord;
+import java100.app.domain.Score;
 import java100.app.util.Prompts;
 
 public class BordController extends GenericController<Bord> {
 
+    private String dataFilePath;
     
+    public BordController(String dataFilePath) {
+        this.dataFilePath = dataFilePath;
+        this.init();
+    }
   
+    public void destroy() {
+        
+        
+        try (FileWriter out = new FileWriter(dataFilePath);){
+            
+            
+            for(Bord bord : this.list) {
+                out.write(bord.toCSVString() + "\n");
+            }
+            
+           
+        } catch (IOException e) {
+            e.printStackTrace();
+        
+        }
+        
+    }
+    @Override
+    public void init() {
+        try(FileReader in = new FileReader(dataFilePath);
+            Scanner sc = new Scanner(in);    
+                ) {
+            
+            String csv = null;
+            while(sc.hasNextLine()) {
+              csv = sc.nextLine();  
+             
+                try {
+                    list.add(new Bord(csv));
+                } catch (CSVFormatException e) {
+                    System.err.println("CSV 데이터 형식 오류!");
+                    e.printStackTrace();
+                }
+            
+            
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+} 
+    
+    
     @Override
     public void excute() {
         loop:
@@ -64,6 +115,7 @@ public class BordController extends GenericController<Bord> {
     
     private void doAdd() {
         System.out.println("[게시물 등록]");
+        
         
         Bord bord = new Bord();
         bord.setNo(Prompts.inputInt("번호? "));

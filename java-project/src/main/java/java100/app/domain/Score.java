@@ -1,6 +1,8 @@
 package java100.app.domain;
 import java.util.Scanner;
 
+import java100.app.controll.CSVFormatException;
+
 //: ## 생성자와 인스턴스 메서드 도입
 //: - init() 메서드 대신 생성자를 이용하여 인스턴스를 초기화시킨다.
 //: - print() 메서드는 인스턴스 데이터를 다루기 때문에 스태틱 메서드 대신
@@ -26,6 +28,13 @@ public class Score {
     }
     
     
+    @Override
+    public String toString() {
+        return "Score [name=" + name + ", kor=" + kor + ", eng=" + eng + ", math=" + math + ", sum=" + sum + ", aver="
+                + aver + "]";
+    }
+
+    
     public Score(String name, int kor, int eng, int math) {
         this.name = name;
         this.kor = kor;
@@ -36,6 +45,31 @@ public class Score {
         this.compute();
     }
     
+    public String toCSVString() {
+        return String.format("%s,%d,%d,%d,%d,%f\n", 
+                this.getName(),
+                this.getKor(),
+                this.getEng(), 
+                this.getMath(),
+                this.getSum(),
+                this.getAver());
+    }
+    
+    public Score(String scv) throws CSVFormatException {
+        String[] rec = scv.split(",");
+        if(rec.length < 4) {
+           throw new CSVFormatException("CSV 데이터 항목의 개수가 올바르지 않습니다.");
+        }
+        try {
+        this.name = rec[0];
+        this.kor = Integer.parseInt(rec[1]);
+        this.eng = Integer.parseInt(rec[2]);
+        this.math = Integer.parseInt(rec[3]);
+        this.compute();
+        }catch(Exception e) {
+            throw new CSVFormatException("CSV 데이터 항목의 형식이 올바르지 않습니다.");
+        }
+        }
      
     
     //: ### 인스턴스 메서드
