@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
 // 파일 읽기 : FileInputStream 바이너리 파일을 읽을떄 사용한다 (바이트 단위로 읽는다)
-public class Test3 {
+public class Test3_0 {
 
     public static void main(String[] args) throws Exception {
         
