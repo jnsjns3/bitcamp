@@ -1,8 +1,11 @@
 package java100.app.controll;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Scanner;
 
@@ -26,13 +29,17 @@ public class ScoreController extends GenericController<Score> {
     public void destroy() {
         
       
-        try (FileWriter out = new FileWriter(this.dataFilePath);){
+        try (PrintWriter out = new PrintWriter
+                                     (new BufferedWriter
+                                          (new FileWriter(this.dataFilePath)));
+                ){
             
             
             for(Score score : this.list) {
-                out.write(score.toCSVString() + "\n");
+                out.println(score.toCSVString());
+               
             }
-            
+            out.flush(); //close를 해도 자동으로 flush가 된다. 명시적으로 써놓음
            
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,15 +49,15 @@ public class ScoreController extends GenericController<Score> {
     }
     @Override
     public void init() {
-        try(FileReader in = new FileReader(this.dataFilePath);
-            Scanner sc = new Scanner(in);    
+        try(BufferedReader in = new BufferedReader(
+                                    new FileReader(this.dataFilePath));
+            
                 ) {
             
             String csv = null;
-            while(sc.hasNextLine()) {
-              csv = sc.nextLine();  
-             
-                try {
+            
+            while((csv=in.readLine()) != null) {
+             try {
                     list.add(new Score(csv));
                 } catch (CSVFormatException e) {
                     System.err.println("CSV 데이터 형식 오류!");

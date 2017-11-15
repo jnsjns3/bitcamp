@@ -1,8 +1,11 @@
 package java100.app.controll;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,14 +28,16 @@ public class BordController extends GenericController<Bord> {
     public void destroy() {
         
         
-        try (FileWriter out = new FileWriter(dataFilePath);){
+        try (PrintWriter out = new PrintWriter
+                (new BufferedWriter
+                        (new FileWriter(this.dataFilePath)));){
             
             
             for(Bord bord : this.list) {
-                out.write(bord.toCSVString() + "\n");
+                out.println(bord.toCSVString());
             }
             
-           
+           out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         
@@ -41,14 +46,13 @@ public class BordController extends GenericController<Bord> {
     }
     @Override
     public void init() {
-        try(FileReader in = new FileReader(dataFilePath);
-            Scanner sc = new Scanner(in);    
+        try(BufferedReader in = new BufferedReader(
+                new FileReader(this.dataFilePath));  
                 ) {
             
             String csv = null;
-            while(sc.hasNextLine()) {
-              csv = sc.nextLine();  
-             
+            while((csv=in.readLine()) != null) {
+              
                 try {
                     list.add(new Bord(csv));
                 } catch (CSVFormatException e) {

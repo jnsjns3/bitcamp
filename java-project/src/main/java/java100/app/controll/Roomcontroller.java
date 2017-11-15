@@ -1,8 +1,11 @@
 package java100.app.controll;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
@@ -13,6 +16,9 @@ import java100.app.util.Prompts;
 
 public class Roomcontroller extends ArrayList<Room> implements Controller {
     
+    
+    private static final long serialVersionUID = 1L;
+
     Scanner sc = new Scanner(System.in);
     
     private String dataFilePath;
@@ -26,13 +32,15 @@ public class Roomcontroller extends ArrayList<Room> implements Controller {
     public void destroy() {
         
       
-        try (FileWriter out = new FileWriter(dataFilePath);){
+        try (PrintWriter out = new PrintWriter
+                (new BufferedWriter
+                        (new FileWriter(this.dataFilePath)));){
             
             
             for(Room room : this) {
-                out.write(room.toCSVString() + "\n");
+                out.println(room.toCSVString());
             }
-            
+            out.flush();
            
         } catch (IOException e) {
             e.printStackTrace();
@@ -42,14 +50,13 @@ public class Roomcontroller extends ArrayList<Room> implements Controller {
     }
     @Override
     public void init() {
-        try(FileReader in = new FileReader(dataFilePath);
-            Scanner sc = new Scanner(in);    
+        try(BufferedReader in = new BufferedReader(
+                new FileReader(this.dataFilePath));    
                 ) {
             
             String csv = null;
-            while(sc.hasNextLine()) {
-              csv = sc.nextLine();  
-             
+            while((csv=in.readLine()) != null) {
+              
                 try {
                     this.add(new Room(csv));
                 } catch (CSVFormatException e) {
