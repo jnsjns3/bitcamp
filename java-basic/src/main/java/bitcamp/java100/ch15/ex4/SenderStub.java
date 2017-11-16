@@ -11,7 +11,7 @@ public class SenderStub {
     
     public SenderStub(Socket socket) throws Exception {
         this.socket = socket;
-        System.out.printf("송신자 %s가 연결되었슴",socket.getInetAddress().getHostAddress());
+        System.out.printf("송신자 (%s)가 연결되었슴\n",socket.getInetAddress().getHostAddress());
         in = new Scanner(socket.getInputStream());
         
     }
