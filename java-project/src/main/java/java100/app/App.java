@@ -1,18 +1,18 @@
 package java100.app;
-import java.util.Collection;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashMap;
 import java.util.Scanner;
 
 import java100.app.controll.BordController;
 import java100.app.controll.Controller;
-import java100.app.controll.GenericController;
 import java100.app.controll.Membercontroller;
 import java100.app.controll.Roomcontroller;
 import java100.app.controll.ScoreController;
-import java100.app.domain.Bord;
-import java100.app.domain.Member;
-import java100.app.domain.Room;
-import java100.app.domain.Score;
 
 // 요구사항
 /*
@@ -23,108 +23,105 @@ import java100.app.domain.Score;
 
 
 public class App {
-    static Scanner sc = new Scanner(System.in);
-    
+    Scanner sc = new Scanner(System.in);
+
     //이제 HashMap에 보관하는 값은 Controller 규칙을 준수한 객체이다.
-    static HashMap<String, Controller> controllerMap = 
+    HashMap<String, Controller> controllerMap = 
             new HashMap<>();
-    
-    
-    
-    
-    public static void main(String[] args) {
-       
-        controllerMap.put("1", new ScoreController("./data/scroe.csv"));
-        controllerMap.put("2", new Membercontroller("./data/member.csv"));
-        controllerMap.put("3", new BordController("./data/bord.csv"));
-        
-        // Roomcontroller는 GenericController를 상속 받지 않았따.
-        // 그래서 controllerMap에 저장할 수 없다.
-        controllerMap.put("4", new Roomcontroller("./data/room.csv")); //ok!
-        
-        loop:
+
+
+    void init() {
+        controllerMap.put("/score", new ScoreController("./data/score.csv"));
+        controllerMap.put("/member", new Membercontroller("./data/member.csv"));
+        controllerMap.put("/board", new BordController("./data/bord.csv"));
+        controllerMap.put("/room", new Roomcontroller("./data/room.csv")); //ok!
+    }
+
+    void service() throws Exception {
+
+        ServerSocket ss = new ServerSocket(9999);
+        System.out.println("서버실행");
         while(true) {
-            System.out.println("명령>");
-            String[] input = sc.nextLine().toLowerCase().split(" ");
-            
-            try {
-            switch (input[0]) {
-            case "menu":
-                doMenu();
-                break;
-            case "help":
-                doHelp();
-                System.out.println("도움말 출력");
-                break;
-            
-            case "quit":
-                doQuite(); break loop;
-            case "go":
-                doGo(input[1]); break;
 
-            default:
-                doError();
+            try(
+                    Socket socket = ss.accept();
+                    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
+                    PrintStream out = new PrintStream(new BufferedOutputStream(socket.getOutputStream()));
+                    ){
+               
                 
-            }
+                    while(true) {
+                       
+                        String command = in.readLine();
+                        
+                        if(command.equals("/")) {
+                            hello(command, out);
+                        }else if(command.equals("quit")){
+                            break;
+                        }else {
+                            request(command, out);
+                        }
+                        out.println(); //응답 완료를 표시하기 위한 빈줄 보냄
+                        out.flush();
+                    }
+                
             }catch (Exception e) {
-                System.out.println("명령 처리 중 오류 발생!");
+                e.printStackTrace();
             }
-            
-            
-          
         }
-        
-       
-    }
-    
-     private static void doGo(String menuNO) {
-         
-        
-         Controller controller = controllerMap.get(menuNO);
-         if(controller == null) {
-             System.out.println("해당 번호의 메뉴가 없습니다.");
-             return;
-         }
-         controller.excute();
-         
-         
     }
 
+
+
+private void request(String command, PrintStream out) {
    
-
-    private static void doHelp() {
-         System.out.println("[명령]");
-         System.out.println("menu           -메뉴 목록을 출력한다");
-         System.out.println("명령을 실행할 때는 'go 번호' 를 입력하세요");
-         System.out.println("quit           -프로그램 종료");
-         
-    }
-
-    private static void doMenu() {
-        System.out.println("1. 성적관리");
-        System.out.println("2. 회원관리");
-        System.out.println("3. 게시판");
-        
-    }
-
-    private static void doError() {
-         System.out.println("실행할수 없는 명령어 입니다.");
-        
-    }
-
-    private static void doQuite() {
-        Collection<Controller> controls = controllerMap.values();
-        for(Controller control : controls) { 
-         control.destroy(); //각 컨트롤러에게 마무리 기회를 준다.
-        }
-        
-        System.out.println("프로그램을 종료합니다!");
-         
-    }
-
+    String menuName=command;
+    int i = command.indexOf("/", 1); //0다음 부터
     
+    if(i !=-1) {
+      menuName = command.substring(0, i);
+    }
 
-    
+
+    Controller controller = controllerMap.get(menuName);
+    if(controller == null) {
+        out.println("해당 명령을 지원하지 않습니다.");
+        return;
+    }
+    out.println("좋은 명령입니다. ^^");
+    //controller.excute();
+
+
+}
+
+
+
+private void hello(String command,PrintStream out) {
+    out.println("안녕하세요. 성적관리 시스템 입니다.");
+    out.println("[성적]");
+    out.println("[목록보기 명령: /score/list]");
+    out.println("[상세보기 명령: /score/view?name=이름]");
+    out.println("[등록: /score/add?name=이름&kor=점수&eng=점수&math=점수]");
+    out.println("[변경: /score/update?name=이름&kor=점수&eng=점수&math=점수]");
+    out.println("[삭제: /score/delete?name=이름");
+    out.println("[회원]");
+    out.println("[게시판]");
+    out.println("[강의실]");
+
+}
+
+
+
+
+public static void main(String[] args) throws Exception {
+    App app = new App();
+    app.init();
+    app.service();
+
+
+}
+
+
 }
 
 

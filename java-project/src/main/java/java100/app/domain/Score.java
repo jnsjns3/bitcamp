@@ -55,21 +55,24 @@ public class Score {
                 this.getAver());
     }
     
-    public Score(String scv) throws CSVFormatException {
-        String[] rec = scv.split(",");
-        if(rec.length < 4) {
-           throw new CSVFormatException("CSV 데이터 항목의 개수가 올바르지 않습니다.");
-        }
+    public Score(String csv) throws CSVFormatException {
+        String[] rec = csv.split(",");
+        if (rec.length < 4) // 데이터의 개수가 올바르지 않다면,
+            throw new CSVFormatException(
+                    "CSV 데이터 항목의 개수가 올바르지 않습니다.");
+        
         try {
-        this.name = rec[0];
-        this.kor = Integer.parseInt(rec[1]);
-        this.eng = Integer.parseInt(rec[2]);
-        this.math = Integer.parseInt(rec[3]);
-        this.compute();
-        }catch(Exception e) {
-            throw new CSVFormatException("CSV 데이터 항목의 형식이 올바르지 않습니다.");
+            this.name = rec[0]; 
+            this.kor = Integer.parseInt(rec[1]); 
+            this.eng = Integer.parseInt(rec[2]); 
+            this.math = Integer.parseInt(rec[3]);
+            this.compute();
+            
+        } catch (Exception e) {
+            throw new CSVFormatException(
+                    "CSV 데이터 항목의 형식이 올바르지 않습니다.");
         }
-        }
+    }
      
     
     //: ### 인스턴스 메서드
