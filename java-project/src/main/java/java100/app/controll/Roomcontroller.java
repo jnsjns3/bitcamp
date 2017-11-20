@@ -73,79 +73,77 @@ public class Roomcontroller extends ArrayList<Room> implements Controller {
     
     
     @Override
-    public void excute() {
-        loop:
-            while(true) {
-           System.out.println("강의실관리> ");
-           
-           String input = sc.nextLine();
+    public void excute(Request request, Response response) {
+        
           
-           switch (input) {
-        case "add":
-            this.doAdd(); break;
+           switch (request.getMenuPaht()) {
+        case "/room/add":
+            this.doAdd(request, response); break;
             
-        case "list":
-            this.doList(); break;
+        case "/room/list":
+            this.doList(request, response); break;
         
          
-        case "delete":
-            this.doDelete(); break;
+        case "/room/delete":
+            this.doDelete(request, response); break;
             
-        case "main":
-            break loop;
-              
+      
         default:
-            System.out.println("해당 명령이 없습니다"); break;
+            response.getWriter().println("해당 명령이 없습니다"); break;
             
         }
-            }
+            
     
     }
-    private void doList(){
-        System.out.println("[강의실 목록]");
+    private void doList(Request request, Response response){
+        PrintWriter out = response.getWriter();
+        
+        
+        out.println("[강의실 목록]");
         Iterator<Room> iterator;
         iterator = this.iterator();
         while(iterator.hasNext()) {
             Room room = iterator.next();
-            System.out.printf("%s, %s, %d\n", room.getLocation(), room.getName(), room.getCapacity());
+            out.printf("%s, %s, %d\n", room.getLocation(), room.getName(), room.getCapacity());
         }
     }
     
-    private void doAdd() {
-        System.out.println("[강의실 등록]");
+    private void doAdd(Request request, Response response) {
+        PrintWriter out = response.getWriter();
+        
+        out.println("[강의실 등록]");
         Room room = new Room();
        
-       
-        room.setName(Prompts.inputString("강의실 이름?"));
+        room.setName(request.getParameter("name"));
         if(find(room.getName()) != null) {
-            System.out.println("이미 등록된 강의실 입니다.");
+            out.println("이미 등록된 강의실 입니다.");
             return;
         }
         
-        room.setLocation(Prompts.inputString("지역??"));
-        room.setCapacity(Prompts.inputInt("수용인원? "));
+        room.setLocation(request.getParameter("location"));
+        room.setCapacity(Integer.parseInt(request.getParameter("capacity")));
         this.add(room);
-            
+        out.println("저장되었습니다.");    
             
           
    }
    
     
-    private void doDelete() {
-        System.out.println("[강의실 삭제]");
-        String roomName = Prompts.inputString("강의실 이름? ");
+    private void doDelete(Request request, Response response) {
+        PrintWriter out = response.getWriter();
         
-        Room room = find(roomName);
+        out.println("[강의실 삭제]");
+        String name = request.getParameter("name");
+        
+        Room room = find(name);
         
         if(room == null) {
-            System.out.printf("%s 의 강의실 정보가 없습니다.\n", roomName);
+            System.out.printf("%s 의 강의실 정보가 없습니다.\n", name);
            return;
         }
-            if(Prompts.confirm2("정말 삭제 하시겠습니까?(y/n)")) {
-                this.remove(room);
-            }else {
-                System.out.println("삭제를 취소하였습니다.");
-            }
+           
+       this.remove(room);
+       out.println("삭제되었습니다.");     
            
         }
         

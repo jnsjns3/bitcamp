@@ -19,14 +19,20 @@ public class Server {
 		
 		@Override
 		public void run() {
-			
+		    Socket socket = this.socket;
+		    try {
+		    BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
+            out.println("HTTP/1.1 200 OK");
+            out.println("Content-Type:text/plain;charset=UTF-8"); //출력하는 콘텐츠의 MIME 타입
+            out.println();
+            out.println("실행");
 			while(true) {
 				
-				try {
-				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-				PrintWriter out = new PrintWriter(new OutputStreamWriter(socket.getOutputStream()));
 				
 				String command = in.readLine();
+				
+				
 				
 				String[] str = command.split(" ");
 				int su1 = Integer.parseInt(str[0]);
@@ -34,19 +40,21 @@ public class Server {
 				int su3 = 0;
 				
 				String count = str[1];
+				
 				switch (count) {
 				case "+": su3 = su1 + su2;
 						out.println(su3);
 						out.flush();
 					break;
-
-				default:
-					break;
+	
 				}
 				
-				}catch (Exception e) {
-				 System.out.println("예외!");
+				
+				
 				}
+				}catch (Exception e) {
+	                 System.out.println("예외!");
+				
 		}
 		
 	}
@@ -57,6 +65,7 @@ public class Server {
 		ServerSocket ss = new ServerSocket(9999);
 		System.out.println("서버 시작!");
 		Socket socket = ss.accept();
+		
 		MyThr tr = new MyThr(socket);
 		
 		tr.start();

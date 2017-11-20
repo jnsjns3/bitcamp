@@ -1,5 +1,6 @@
 package java100.app.controll;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,6 +11,10 @@ public abstract class GenericController<T> implements Controller {
     
     static Scanner sc = new Scanner(System.in);
     protected ArrayList<T> list = new ArrayList<>();
+    public void excute(String command, PrintStream out) {
+        // TODO Auto-generated method stub
+        
+    }
    
     //이 클래스에서는 공통 메서드의 규격(prototype)만 정의한다
     //자바에서는 이런 메서드 규격을 메서드 시그너쳐(method signature) 라 부른다

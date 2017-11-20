@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 import java100.app.controll.CSVFormatException;
 
-public class Bord {
+public class Board {
 
     protected int no;
     protected String title;
@@ -15,11 +15,11 @@ public class Bord {
     
     
     
-    public Bord() {
+    public Board() {
         
     }
     
-    public Bord(String csv) throws CSVFormatException {
+    public Board(String csv) throws CSVFormatException {
         String[] rec = csv.split(",");
         if(rec.length != 5) {
            throw new CSVFormatException("CSV 데이터 항목의 개수가 올바르지 않습니다.");
@@ -36,21 +36,23 @@ public class Bord {
         }
     }
     
-    public String toCSVString() {
-        return String.format("%d,%s,%s,%s,%d", 
-                this.getNo(),
-                this.getTitle(),
-                this.getContent(),
-                this.regDate.toString(),
-                this.viewCount);
-    }
-    
-
     @Override
     public String toString() {
         return "Bord [no=" + no + ", title=" + title + ", content=" + content + ", regDate=" + regDate + ", viewCount="
                 + viewCount + "]";
     }
+    
+    public String toCSVString() {
+        return String.format("%d,%s,%s,%s,%d", 
+                this.getNo(),
+                this.getTitle(),
+                this.getContent(),
+                this.getRegDate().toString(),
+                this.getViewCount());
+    }
+    
+
+    
 
 
     public int getNo() {

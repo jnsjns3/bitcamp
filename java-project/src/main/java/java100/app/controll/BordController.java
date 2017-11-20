@@ -12,11 +12,11 @@ import java.util.Iterator;
 import java.util.Scanner;
 import java.util.concurrent.BrokenBarrierException;
 
-import java100.app.domain.Bord;
+import java100.app.domain.Board;
 import java100.app.domain.Score;
 import java100.app.util.Prompts;
 
-public class BordController extends GenericController<Bord> {
+public class BordController extends GenericController<Board> {
 
     private String dataFilePath;
     
@@ -33,7 +33,7 @@ public class BordController extends GenericController<Bord> {
                         (new FileWriter(this.dataFilePath)));){
             
             
-            for(Bord bord : this.list) {
+            for(Board bord : this.list) {
                 out.println(bord.toCSVString());
             }
             
@@ -54,7 +54,7 @@ public class BordController extends GenericController<Bord> {
             while((csv=in.readLine()) != null) {
               
                 try {
-                    list.add(new Bord(csv));
+                    list.add(new Board(csv));
                 } catch (CSVFormatException e) {
                     System.err.println("CSV 데이터 형식 오류!");
                     e.printStackTrace();
@@ -69,150 +69,136 @@ public class BordController extends GenericController<Bord> {
     
     
     @Override
-    public void excute() {
-        loop:
-            while(true) {
-           System.out.println("게시판> ");
-           
-           String input = sc.nextLine();
-          
-           switch (input) {
-        case "add":
-            this.doAdd(); break;
+    public void excute(Request request, Response response) {
+      
+           switch (request.getMenuPaht()) {
+        case "/board/add":
+            this.doAdd(request, response); break;
+        case "/board/list":
+            this.doList(request, response); break;
+        case "/board/view":
+            this.doView(request, response); break;
+        case "/board/update":
+            this.doUpdate(request, response); break; 
+        case "/board/delete":
+            this.doDelete(request, response); break;
             
-        case "list":
-            this.doList(); break;
-            
-        case "view":
-            this.doView(); break;
-            
-        case "update":
-            this.doUpdate(); break; 
-            
-        case "delete":
-            this.doDelete(); break;
-            
-        case "main":
-            break loop;
-              
         default:
-            System.out.println("해당 명령이 없습니다"); break;
+            response.getWriter().println("해당 명령이 없습니다"); break;
             
         }
-            }
+            
     
     }
     
-    private void doList() {
-        System.out.println("[게시물 목록]");
+    private void doList(Request request, Response response) {
+        PrintWriter out = response.getWriter();
+       out.println("[게시 목록]");
         
-        Iterator<Bord> iterator = list.iterator();
+        Iterator<Board> iterator = list.iterator();
         while (iterator.hasNext()) {
-            Bord board = iterator.next();
-            System.out.printf("%d, %s, %s, %d\n",  
+            Board board = iterator.next();
+            out.printf("%d, %s, %s, %d\n",  
                     board.getNo(), 
                     board.getTitle(),
                     board.getRegDate().toString(),
                     board.getViewCount());
         }
+        out.println();
     }
     
-    private void doAdd() {
-        System.out.println("[게시물 등록]");
+    private void doAdd(Request request, Response response) {
+        PrintWriter out = response.getWriter();
         
         
-        Bord bord = new Bord();
-        bord.setNo(Prompts.inputInt("번호? "));
+        
+        Board bord = new Board();
+        bord.setNo(Integer.parseInt(request.getParameter("no")));
         
         if(findByNo(bord.getNo()) != null) {
-            System.out.println("이미 등록된 번호 입니다.");
+            out.println("이미 등록된 번호 입니다.");
+            return;
         }
                 
-                bord.setTitle(Prompts.inputString("제목? "));
-                bord.setContent(Prompts.inputString("내용? "));
+                bord.setTitle(request.getParameter("title"));
+                bord.setContent(request.getParameter("content"));
                 bord.setRegDate(new Date(System.currentTimeMillis())); // 최근 시간 입력
               
                 list.add(bord);
+                out.println("등록되었습니다.");
            
    }
     
-private void doView() {
+private void doView(Request request, Response response) {
+    
+        PrintWriter out = response.getWriter();
         
-        System.out.println("[게시물 상세 정보]");
        
-        int no = Prompts.inputInt("번호? ");
+        int no = Integer.parseInt(request.getParameter("no"));
         
-        Bord bord = findByNo(no);
+        Board bord = findByNo(no);
         
         if(bord == null) {
-            System.out.printf("%d 의 게시물 정보가 없습니다.\n", no);
+            out.printf("%d 의 게시물 정보가 없습니다.\n", no);
             return;
-        }else {
-            System.out.printf("제목: %s\n", bord.getTitle());
-            System.out.printf("내용: %s\n", bord.getContent());
-            System.out.printf("등록일: %s\n", bord.getRegDate().toString());
-            bord.setViewCount(bord.getViewCount() + 1);
-            System.out.printf("조회수: %d\n", bord.getViewCount());
-              
         }
+            out.printf("제목: %s\n", bord.getTitle(),
+                     "내용: %s\n", bord.getContent(),
+                     "등록일: %s\n", bord.getRegDate().toString(),
+                     "조회수: %d\n", bord.getViewCount());
+            out.println();
+            bord.setViewCount(bord.getViewCount() + 1);
+            out.println();
+            
+            
+        
        
    }
 
-private void doUpdate() {
-    System.out.println("[게시물 변경]");
-    int no = Prompts.inputInt("번호? ");
+private void doUpdate(Request request, Response response) {
+   
+    PrintWriter out = response.getWriter();
+   
+    int no = Integer.parseInt(request.getParameter("no"));
     
-    Bord bord = findByNo(no);
+    Board bord = findByNo(no);
     
     if (bord == null) {
-        System.out.printf("%d번 게시물이 없습니다.\n", no);
+        out.printf("%d번 게시물이 없습니다.\n", no);
         return;
     } 
     
-    String title = Prompts.inputString("제목?(%s) ", bord.getTitle());
-    if (title.isEmpty()) {
-        title = bord.getTitle();
-    }
-    
-    String content = Prompts.inputString("내용? ");
-    
-    if (Prompts.confirm2("변경하시겠습니까?(y/N) ")) {
-        bord.setTitle(title);
-        bord.setContent(content);
-        bord.setRegDate(new Date(System.currentTimeMillis()));
-        System.out.println("변경하였습니다.");
-        
-    } else {
-        System.out.println("변경을 취소하였습니다.");
-    }
+    bord.setTitle(request.getParameter("title"));
+    bord.setContent(request.getParameter("content"));
+    bord.setRegDate(new Date(System.currentTimeMillis()));
+    out.println("변경하였습니다!");
 }
-    private void doDelete() {
-        System.out.println("[게시물 삭제]");
-        int no = Prompts.inputInt("번호? ");
+    private void doDelete(Request request, Response response) {
         
-        Bord bord = findByNo(no);
+        PrintWriter out = response.getWriter();
+        out.println("[게시물 삭제]");
+        int no = Integer.parseInt(request.getParameter("no"));
+        
+        Board bord = findByNo(no);
         
         if (bord == null) {
-            System.out.printf("%d번 게시물이 없습니다.\n", no);
-        } else {
-            if (Prompts.confirm2("정말 삭제하시겠습니까?(y/N) ")) {
-                list.remove(bord);
-                System.out.println("삭제하였습니다.");
-            } else {
-                System.out.println("삭제를 취소하였습니다.");
-            }
-        }
+            out.printf("%d번 게시물이 없습니다.\n", no);
+            return;
+        } 
+           list.remove(bord);
+           out.println("삭제하였습니다.");
+        
     }  
            
         
         
    
-    private Bord findByNo(int no) {
-        Iterator<Bord> iterator;
+    private Board findByNo(int no) {
+        Iterator<Board> iterator;
         
         iterator = list.iterator();
         while(iterator.hasNext()) {
-            Bord bord = iterator.next();
+            Board bord = iterator.next();
             if(bord.getNo() == no) {
                 return bord;
                 
