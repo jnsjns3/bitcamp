@@ -1,15 +1,31 @@
 package myTest;
 
-import java.sql.Date;
-
 public class testTest {
 
     
     public static void main(String[] args) {
         
-        String name;
-        Date date = new Date(System.currentTimeMillis());
-        System.out.println(date.toString());
+        int su = 151863338;
+        int ent;
+        int su2 = 1;
+        
+        int[] arr = new int[10];
+        
+        
+        
+        for(int i=0; i <= 9; i++) {
+            
+            ent = su % 10;
+            arr[ent] += su2;
+            System.out.println("["+i+"]"+" = "+arr[i]);
+            su = su / 10;
+            
+            
+        }
+        
+        
+        
+        
         
     }
 }
