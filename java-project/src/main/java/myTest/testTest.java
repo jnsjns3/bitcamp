@@ -19,7 +19,7 @@ public class testTest {
             arr[ent] += su2;
             System.out.println("["+i+"]"+" = "+arr[i]);
             su = su / 10;
-            
+        
             
         }
         
