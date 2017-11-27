@@ -35,7 +35,13 @@ repositories {
     jcenter()
 }
 dependencies {
+    //jdbc mysql DBMS의 JDBC Driver
+    compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.44'
+
+    // This dependency is found on compile classpath of this component and consumers.
     compile 'com.google.guava:guava:22.0'
+
+    // Use JUnit test framework
     testCompile 'junit:junit:4.12'
 }
 mainClassName = 'App'

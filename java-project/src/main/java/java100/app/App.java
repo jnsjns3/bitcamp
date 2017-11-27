@@ -6,6 +6,9 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Scanner;
@@ -17,10 +20,12 @@ import java100.app.controll.Request;
 import java100.app.controll.Response;
 import java100.app.controll.Roomcontroller;
 import java100.app.controll.ScoreController;
+import java100.app.dao.DaoException;
+import java100.app.domain.Board;
 
 // 요구사항
 /*
-목록=> /board/list
+ * JDBC API 적용함
 
  */
 
@@ -35,11 +40,22 @@ public class App {
             new HashMap<>();
 
 
+    
     void init() {
-        controllerMap.put("/score", new ScoreController("./data/score.csv"));
-        controllerMap.put("/member", new Membercontroller("./data/member.csv"));
-        controllerMap.put("/board", new BordController("./data/board.csv"));
-        controllerMap.put("/room", new Roomcontroller("./data/room.csv")); //ok!
+        
+        ScoreController scoreController = new ScoreController();
+        Roomcontroller roomcontroller = new Roomcontroller();
+        Membercontroller membercontroller = new Membercontroller();
+        BordController bordController = new BordController();
+        scoreController.init();
+        roomcontroller.init();
+        membercontroller.init();
+        bordController.init();
+        controllerMap.put("/score", scoreController);
+        controllerMap.put("/room", roomcontroller);
+        controllerMap.put("/member", membercontroller);
+        controllerMap.put("/board", bordController);
+        
     }
 
     void service() throws Exception {

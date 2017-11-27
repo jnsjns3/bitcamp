@@ -1,76 +1,26 @@
 package java100.app.controll;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
 
+import java100.app.dao.ScoreDao;
 import java100.app.domain.Score;
-import java100.app.util.Prompts;
 
-public class ScoreController extends GenericController<Score> {
-
-    private String dataFilePath;
+public class ScoreController implements Controller {
     
-    public ScoreController(String dataFilePath) {
-        this.dataFilePath = dataFilePath;
-        this.init();
-        
-        
-    }
+    
+    ScoreDao scoreDao = new ScoreDao();
     
     
     @Override
-    public void destroy() {
-        
-      
-        try (PrintWriter out = new PrintWriter
-                                     (new BufferedWriter
-                                          (new FileWriter(this.dataFilePath)));
-                ){
-            
-            
-            for(Score score : this.list) {
-                out.println(score.toCSVString());
-               
-            }
-            out.flush(); //close를 해도 자동으로 flush가 된다. 명시적으로 써놓음
-           
-        } catch (IOException e) {
-            e.printStackTrace();
-        
-        }
-        
-    }
+    public void destroy() {}
+    
     @Override
-    public void init() {
-        try(BufferedReader in = new BufferedReader(
-                                    new FileReader(this.dataFilePath));
-            
-                ) {
-            
-            String csv = null;
-            
-            while((csv=in.readLine()) != null) {
-             try {
-                    list.add(new Score(csv));
-                } catch (CSVFormatException e) {
-                    System.err.println("CSV 데이터 형식 오류!");
-                    e.printStackTrace();
-                }
-            
-            
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-} 
+    public void init() {} 
     
     
     @Override
@@ -100,18 +50,24 @@ public class ScoreController extends GenericController<Score> {
     
     private void doDelete(Request request, Response response) {
         PrintWriter out = response.getWriter();
-        String name = request.getParameter("name");
-        
         out.println("[학생 삭제]");
         
-        Score score = findByName(name);
-        
-        if(score == null) {
-            out.printf("%s 의 성적 정보가 없습니다.\n", name);
-        }else {
-            list.remove(score);
-            out.println("삭제하였습니다.");
-           
+        try {
+            int no= Integer.parseInt(request.getParameter("no"));
+            
+            
+            if(scoreDao.delete(no) > 0) {
+                
+               out.println("삭제됬습니다.");
+             
+            }else {
+                out.printf("'%d' 의 성적 정보가 없습니다.\n", no);
+                           
+            }
+                        
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
         }
         
         
@@ -120,96 +76,123 @@ public class ScoreController extends GenericController<Score> {
 
     private void doUpdate(Request request, Response response) {
         PrintWriter out = response.getWriter();
-        String name = request.getParameter("name");
         
-        out.println("[학생 정보 변경]");
-        
-        Score score = findByName(name);
-        
-        if (score == null) {
-            out.printf("'%s'의 성적 정보가 없습니다.\n", name);
-            return;
-        } 
-            score.setKor(Integer.parseInt(request.getParameter("kor")));
-            score.setEng(Integer.parseInt(request.getParameter("eng")));
-            score.setMath(Integer.parseInt(request.getParameter("math")));
+        out.println("[성적 변경]");
             
-            out.println("변경하였습니다!");
+            try {
+                
+                Score score = new Score();
+                score.setNo(Integer.parseInt(request.getParameter("no")));
+                score.setName(request.getParameter("name"));    
+                score.setKor(Integer.parseInt(request.getParameter("kor")));
+                score.setEng(Integer.parseInt(request.getParameter("eng")));
+                score.setMath(Integer.parseInt(request.getParameter("math")));
+                
+                    
+               scoreDao.update(score);
+              
+               out.println("저장하였습니다.");
+                
+                if(scoreDao.update(score) > 0) {
+                    out.println("변경하였습니다.");
+                }else {
+                    out.printf("'%s'의 성적 정보가 없습니다.\n", score.getNo());
+                }
+                
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+                out.println(e.getMessage());
+            }
         
        
    }
 
     private void doView(Request request, Response response) {
         PrintWriter out = response.getWriter();
-        
-        String name = request.getParameter("name");
-        
-        Score score = findByName(name);
        
         out.println("[성적 상세 정보]");
-        if(score == null) {
-            out.printf("%s 의 성적 정보가 없습니다.\n", name);
-            return;
+       
+        try {
             
+            int no = Integer.parseInt(request.getParameter("no"));
+            Score score = scoreDao.selectOne(no);
+            
+            if(score != null) {
+                
+                out.printf("번호: %d\n", score.getNo());
+                out.printf("이름: %s\n", score.getName());
+                out.printf("국어: %d\n", score.getKor());
+                out.printf("영어: %d\n", score.getEng());
+                out.printf("수학: %d\n", score.getMath());
+                out.printf("합계: %d\n", score.getSum());
+                out.printf("평균: %.1f\n", score.getAver());
+             
+           }else {
+                out.printf("'%d' 의 성적 정보가 없습니다.\n", no);
+                           
+             }
+                        
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
         }
-        out.printf("%-4s, %4d, %4d, %4d, %4d, %6.1f\n",   
-                score.getName(), 
-                score.getKor(), 
-                score.getEng(), 
-                score.getMath(), 
-                score.getSum(), 
-                score.getAver());
-            
    }
+    
+   
+    
+    
+    
+    
 
     private void doAdd(Request request, Response response) {
-        
-        
-        Score score;
        
-           score = new Score();
-            
-            score.setName(request.getParameter("name"));
-            score.setKor(Integer.parseInt(request.getParameter("kor")));
-            score.setEng(Integer.parseInt(request.getParameter("eng")));
-            score.setMath(Integer.parseInt(request.getParameter("math")));
-            
-            list.add(score);
-            
-            PrintWriter out = response.getWriter();
+         PrintWriter out = response.getWriter();
+         out.print("[성적 등록]");
+       
+        try{
+            Score score = new Score();
+             score.setName(request.getParameter("name"));    
+             score.setKor(Integer.parseInt(request.getParameter("kor")));
+             score.setEng(Integer.parseInt(request.getParameter("eng")));
+             score.setMath(Integer.parseInt(request.getParameter("math")));
+                 
+            scoreDao.insert(score);
+           
             out.println("저장하였습니다.");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
+        }
+        
+        
     }
     
     private void doList(Request request, Response response){
         PrintWriter out = response.getWriter();
         out.println("[성적 목록]");
         
-        Iterator<Score> iterator;
-        iterator = list.iterator();
-        while(iterator.hasNext()) {
-            Score score = iterator.next();
-            out.printf("%-4s, %4d, %4d, %4d, %4d, %6.1f\n",  
-                        score.getName(), 
-                        score.getKor(), 
-                        score.getEng(), 
-                        score.getMath(), 
-                        score.getSum(), 
-                        score.getAver());
+        try{
+           List<Score> list = scoreDao.selectList(); 
             
+           for(Score score : list) {
+               out.printf("%4d, %4s, %4d, %6.1f\n",
+                                                   score.getNo(),
+                                                   score.getName(),
+                                                   score.getSum(),
+                                                   score.getAver());
+           }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
         }
-    }
-    
-    private Score findByName(String name) {
-        Iterator<Score> iterator = list.iterator();
-        while(iterator.hasNext()) {
-            Score score = iterator.next();
-            if(score.getName().equals(name)) {
-                return score;
-            }
-        }
-        return null;
+        
         
     }
+    
+   
     
     
 }

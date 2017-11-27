@@ -1,7 +1,4 @@
 package java100.app.domain;
-import java.util.Scanner;
-
-import java100.app.controll.CSVFormatException;
 
 //: ## 생성자와 인스턴스 메서드 도입
 //: - init() 메서드 대신 생성자를 이용하여 인스턴스를 초기화시킨다.
@@ -12,6 +9,7 @@ import java100.app.controll.CSVFormatException;
 
 public class Score {
     
+    protected int no;
     protected String name;
     protected int kor;
     protected int eng;
@@ -28,14 +26,8 @@ public class Score {
     }
     
     
-    @Override
-    public String toString() {
-        return "Score [name=" + name + ", kor=" + kor + ", eng=" + eng + ", math=" + math + ", sum=" + sum + ", aver="
-                + aver + "]";
-    }
-
-    
-    public Score(String name, int kor, int eng, int math) {
+    public Score(int no, String name, int kor, int eng, int math) {
+        this.no = no;
         this.name = name;
         this.kor = kor;
         this.eng = eng;
@@ -44,44 +36,28 @@ public class Score {
         
         this.compute();
     }
+
+
+    @Override
+    public String toString() {
+        return "Score [no=" + no + ", name=" + name + ", kor=" + kor + ", eng=" + eng + ", math=" + math + ", sum="
+                + sum + ", aver=" + aver + "]";
+    }
+
     
-    public String toCSVString() {
-        return String.format("%s,%d,%d,%d,%d,%f\n", 
-                this.getName(),
-                this.getKor(),
-                this.getEng(), 
-                this.getMath(),
-                this.getSum(),
-                this.getAver());
+    public int getNo() {
+        return no;
+    }
+
+
+    public void setNo(int no) {
+        this.no = no;
     }
     
-    public Score(String csv) throws CSVFormatException {
-        String[] rec = csv.split(",");
-        if (rec.length < 4) // 데이터의 개수가 올바르지 않다면,
-            throw new CSVFormatException(
-                    "CSV 데이터 항목의 개수가 올바르지 않습니다.");
-        
-        try {
-            this.name = rec[0]; 
-            this.kor = Integer.parseInt(rec[1]); 
-            this.eng = Integer.parseInt(rec[2]); 
-            this.math = Integer.parseInt(rec[3]);
-            this.compute();
-            
-        } catch (Exception e) {
-            throw new CSVFormatException(
-                    "CSV 데이터 항목의 형식이 올바르지 않습니다.");
-        }
-    }
-     
-    
-    //: ### 인스턴스 메서드
-    //: 인스턴스 데이터를 다루는 메서드는 스태틱 보다 인스턴스 메서드로 선언해야 한다.
     
     public String getName() {
         return name;
     }
-
 
     public void setName(String name) {
         this.name = name;

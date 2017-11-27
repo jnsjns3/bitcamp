@@ -1,70 +1,19 @@
 package java100.app.controll;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
-import java.util.concurrent.BrokenBarrierException;
+import java.util.List;
 
+import java100.app.dao.BoardDao;
 import java100.app.domain.Board;
-import java100.app.domain.Score;
-import java100.app.util.Prompts;
 
-public class BordController extends GenericController<Board> {
+public class BordController implements Controller {
 
-    private String dataFilePath;
-    
-    public BordController(String dataFilePath) {
-        this.dataFilePath = dataFilePath;
-        this.init();
-    }
+   BoardDao boardDao = new BoardDao();
   
-    public void destroy() {
-        
-        
-        try (PrintWriter out = new PrintWriter
-                (new BufferedWriter
-                        (new FileWriter(this.dataFilePath)));){
-            
-            
-            for(Board bord : this.list) {
-                out.println(bord.toCSVString());
-            }
-            
-           out.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        
-        }
-        
-    }
+    public void destroy() {}
+    
     @Override
     public void init() {
-        try(BufferedReader in = new BufferedReader(
-                new FileReader(this.dataFilePath));  
-                ) {
-            
-            String csv = null;
-            while((csv=in.readLine()) != null) {
-              
-                try {
-                    list.add(new Board(csv));
-                } catch (CSVFormatException e) {
-                    System.err.println("CSV 데이터 형식 오류!");
-                    e.printStackTrace();
-                }
-            
-            
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 } 
     
     
@@ -95,37 +44,44 @@ public class BordController extends GenericController<Board> {
         PrintWriter out = response.getWriter();
        out.println("[게시 목록]");
         
-        Iterator<Board> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            Board board = iterator.next();
-            out.printf("%d, %s, %s, %d\n",  
-                    board.getNo(), 
-                    board.getTitle(),
-                    board.getRegDate().toString(),
-                    board.getViewCount());
+        
+       try{
+           List<Board> list = boardDao.selectList(); 
+            
+           for(Board board : list) {
+               out.printf("%4d, %4s, %4s, %4s, %4d\n",
+                                                   board.getNo(),
+                                                   board.getTitle(),
+                                                   board.getContent(),
+                                                   board.getRegDate(),
+                                                   board.getViewCount());
+           }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
         }
-        out.println();
+        
     }
     
     private void doAdd(Request request, Response response) {
         PrintWriter out = response.getWriter();
         
-        
-        
-        Board bord = new Board();
-        bord.setNo(Integer.parseInt(request.getParameter("no")));
-        
-        if(findByNo(bord.getNo()) != null) {
-            out.println("이미 등록된 번호 입니다.");
-            return;
+        try{
+            Board board = new Board();
+                board.setTitle(request.getParameter("title"));    
+                board.setContent(request.getParameter("conts"));    
+            
+                 
+            boardDao.insert(board);
+           
+            out.println("저장하였습니다.");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
         }
                 
-                bord.setTitle(request.getParameter("title"));
-                bord.setContent(request.getParameter("content"));
-                bord.setRegDate(new Date(System.currentTimeMillis())); // 최근 시간 입력
-              
-                list.add(bord);
-                out.println("등록되었습니다.");
            
    }
     
@@ -133,80 +89,93 @@ private void doView(Request request, Response response) {
     
         PrintWriter out = response.getWriter();
         
-       
-        int no = Integer.parseInt(request.getParameter("no"));
         
-        Board bord = findByNo(no);
-        
-        if(bord == null) {
-            out.printf("%d 의 게시물 정보가 없습니다.\n", no);
-            return;
+try {
+            
+            int no = Integer.parseInt(request.getParameter("no"));
+            Board board = boardDao.selectOne(no);
+            
+            if(board != null) {
+                
+                out.printf("번호: %d\n", board.getNo());
+                out.printf("제목: %s\n", board.getTitle());
+                out.printf("내용: %s\n", board.getContent());
+                out.printf("날짜: %s\n", board.getRegDate());
+                out.printf("조회수: %d\n", board.getViewCount());
+             
+           }else {
+                out.printf("'%d' 의 게시물 정보가 없습니다.\n", no);
+                           
+             }
+                        
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
         }
-            out.printf("제목: %s\n", bord.getTitle(),
-                     "내용: %s\n", bord.getContent(),
-                     "등록일: %s\n", bord.getRegDate().toString(),
-                     "조회수: %d\n", bord.getViewCount());
-            out.println();
-            bord.setViewCount(bord.getViewCount() + 1);
-            out.println();
-            
-            
-        
-       
    }
+            
+
 
 private void doUpdate(Request request, Response response) {
    
     PrintWriter out = response.getWriter();
    
-    int no = Integer.parseInt(request.getParameter("no"));
     
-    Board bord = findByNo(no);
     
-    if (bord == null) {
-        out.printf("%d번 게시물이 없습니다.\n", no);
-        return;
-    } 
+    try {
+        
+        Board board = new Board();
+        board.setNo(Integer.parseInt(request.getParameter("no")));
+        board.setTitle(request.getParameter("title"));    
+        board.setContent(request.getParameter("conts"));
+        
+            
+       boardDao.update(board);
+      
+       out.println("저장하였습니다.");
+        
+        if(boardDao.update(board) > 0) {
+            out.println("변경하였습니다.");
+        }else {
+            out.printf("'%s'의 게시물 정보가 없습니다.\n", board.getNo());
+        }
+        
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        out.println(e.getMessage());
+    }
     
-    bord.setTitle(request.getParameter("title"));
-    bord.setContent(request.getParameter("content"));
-    bord.setRegDate(new Date(System.currentTimeMillis()));
-    out.println("변경하였습니다!");
+    
 }
     private void doDelete(Request request, Response response) {
         
         PrintWriter out = response.getWriter();
         out.println("[게시물 삭제]");
-        int no = Integer.parseInt(request.getParameter("no"));
         
-        Board bord = findByNo(no);
-        
-        if (bord == null) {
-            out.printf("%d번 게시물이 없습니다.\n", no);
-            return;
-        } 
-           list.remove(bord);
-           out.println("삭제하였습니다.");
-        
+           
+        try {
+            int no= Integer.parseInt(request.getParameter("no"));
+            
+            
+            if(boardDao.delete(no) > 0) {
+                
+               out.println("삭제됬습니다.");
+             
+            }else {
+                out.printf("'%d' 의 게시물 정보가 없습니다.\n", no);
+                           
+            }
+                        
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
+        }
     }  
            
         
         
-   
-    private Board findByNo(int no) {
-        Iterator<Board> iterator;
-        
-        iterator = list.iterator();
-        while(iterator.hasNext()) {
-            Board bord = iterator.next();
-            if(bord.getNo() == no) {
-                return bord;
-                
-            }
-        }
-        return null;
-        
-    }
+ 
     
     
 }
