@@ -1,4 +1,4 @@
-package java100.app.controll;
+package java100.app.control;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -12,9 +12,12 @@ import java100.app.domain.Score;
 
 public class ScoreController implements Controller {
     
+    ScoreDao scoreDao;
     
-    ScoreDao scoreDao = new ScoreDao();
-    
+    public void setScoreDao(ScoreDao scoreDao) {
+        this.scoreDao = scoreDao;
+    }
+
     
     @Override
     public void destroy() {}

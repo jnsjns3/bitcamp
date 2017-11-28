@@ -2,59 +2,54 @@ package java100.app;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.Scanner;
 
-import java100.app.controll.BordController;
-import java100.app.controll.Controller;
-import java100.app.controll.Membercontroller;
-import java100.app.controll.Request;
-import java100.app.controll.Response;
-import java100.app.controll.Roomcontroller;
-import java100.app.controll.ScoreController;
-import java100.app.dao.DaoException;
-import java100.app.domain.Board;
+import java100.app.beans.ApplicationContext;
+import java100.app.control.BoardController;
+import java100.app.control.Controller;
+import java100.app.control.MemberController;
+import java100.app.control.Request;
+import java100.app.control.Response;
+import java100.app.control.RoomController;
+import java100.app.control.ScoreController;
+import java100.app.dao.mysql.BoardDaoImpl;
+import java100.app.dao.mysql.MemberDaoImpl;
+import java100.app.dao.mysql.RoomDaoImpl;
+import java100.app.dao.mysql.ScoreDaoImpl;
+import java100.app.util.DataSource;
 
 // 요구사항
 /*
- * JDBC API 적용함
-
+ 
  */
 
 
 public class App {
     
     ServerSocket ss;
-    Scanner sc = new Scanner(System.in);
-
-    //이제 HashMap에 보관하는 값은 Controller 규칙을 준수한 객체이다.
-    HashMap<String, Controller> controllerMap = 
-            new HashMap<>();
-
-
+    ApplicationContext beanContainer;
+    
     
     void init() {
         
-        ScoreController scoreController = new ScoreController();
-        Roomcontroller roomcontroller = new Roomcontroller();
-        Membercontroller membercontroller = new Membercontroller();
-        BordController bordController = new BordController();
-        scoreController.init();
-        roomcontroller.init();
-        membercontroller.init();
-        bordController.init();
-        controllerMap.put("/score", scoreController);
-        controllerMap.put("/room", roomcontroller);
-        controllerMap.put("/member", membercontroller);
-        controllerMap.put("/board", bordController);
+        beanContainer = new ApplicationContext("./bin/application-context.properties");
+        
+        DataSource ds = new DataSource();
+        ds.setDriverClassName("com.mysql.jdbc.Driver");
+        ds.setUrl("jdbc:mysql://localhost:3306/studydb");
+        ds.setUsername("study");
+        ds.setPassword("1111");
+         
+        beanContainer.addBean("mysqlDataSource", ds);
+        
+        System.out.println("------------------------------------");
+        beanContainer.refreshBeanFactory();
+        
+        
+        
         
     }
 
@@ -71,14 +66,6 @@ public class App {
         }
        
     }
-    
-    private void save() {
-        Collection<Controller> controllers = controllerMap.values();
-        for(Controller controller : controllers) {
-                controller.destroy(); // list에 들어있는 값을 파일에 저장.
-        }
-       
-    }
 
 
 private void request(String command, PrintWriter out) {
@@ -91,8 +78,8 @@ private void request(String command, PrintWriter out) {
     }
 
 
-    Controller controller = controllerMap.get(menuName);
-    if(controller == null) {
+    Object controller = beanContainer.getBean(menuName);
+    if(controller == null && controller instanceof Controller) {
         out.println("해당 명령을 지원하지 않습니다.");
         return;
     }
@@ -102,7 +89,7 @@ private void request(String command, PrintWriter out) {
     response.setWriter(out);
     
     
-    controller.excute(request, response);
+    ((Controller)controller).excute(request, response); // Object 객체에서 Controller 인터페이스를 꺼내기 위한 타입 캐스팅
 
 
 }
@@ -169,7 +156,7 @@ class HttpAgent extends Thread {
                         hello(command, out);
                     }else {
                         request(command, out);
-                        save();
+                        
                     }
                     out.println(); //응답 완료를 표시하기 위한 빈줄 보냄
                     out.flush();
@@ -185,48 +172,5 @@ class HttpAgent extends Thread {
 }
 
 
-// 명령> /score/list
-//bbb, 100, 100, 100, 300, 100.0
-//ccc, 90, 90, 90, 270, 90.0
-//
-//명령> /score/add?name=aaa&kor=100&eng=90&math=30
-//입력되었습니다.
-//
-//명령> /score/view?name=aaa
-//이름: aaa
-//국어: 100
-//영어: 90
-//수학: 30
-//합계: 220
-//평균: 76.6
-//
-//명령> /score/update?name=aaa&kor=100&eng=100&math=100
-//변경하였습니다.
-//
-//명령> /score/delete?name=aaa
-//삭제하였습니다.
-//
-//명령>
-//
-//게시판 명령어 정리:
-//목록 => /board/list
-//보기 => /board/view?no=1
-//등록 => /board/add?no=10&title=aaa&content=bbb
-//변경 => /board/update?no=10&title=aaax&content=bbbx
-//삭제 => /board/delete?no=10
-//
-//회원관리 명령어 정리:
-//목록 => /member/list
-//보기 => /member/view?email=aaa@test.com
-//등록 => /member/add?email=bbb@test.com&name=bbb&password=1111
-//변경 => /member/update?email=bbb@test.com&name=bbbx&password=2222
-//삭제 => /member/delete?email=bbb@test.com
-//
-//강의실 명령어 정리:
-//목록 => /room/list
-//보기 => /room/view?name=K101
-//등록 => /room/add?name=K101&location=강남&capacity=30
-//변경 => /room/update?name=K101&location=강남&capacity=30
-//삭제 => /root/delete?name=K101
-//
+
 

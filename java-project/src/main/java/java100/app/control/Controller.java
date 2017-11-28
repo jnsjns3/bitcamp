@@ -1,4 +1,4 @@
-package java100.app.controll;
+package java100.app.control;
 
 import java.io.PrintStream;
 

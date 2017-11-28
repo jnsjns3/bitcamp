@@ -1,4 +1,4 @@
-package java100.app.controll;
+package java100.app.control;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -14,14 +14,18 @@ import java100.app.dao.RoomDao;
 import java100.app.domain.Room;
 import java100.app.domain.Score;
 
-public class Roomcontroller extends ArrayList<Room> implements Controller {
+public class RoomController extends ArrayList<Room> implements Controller {
     
     private static final long serialVersionUID = 1L;
-    
-    RoomDao roomDao = new RoomDao();
     Scanner sc = new Scanner(System.in);
     
     
+    RoomDao roomDao;
+    
+    public void setRoomDao(RoomDao roomDao) {
+        this.roomDao = roomDao;
+    }
+
     @Override
     public void destroy() {
     }

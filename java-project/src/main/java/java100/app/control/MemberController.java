@@ -1,4 +1,4 @@
-package java100.app.controll;
+package java100.app.control;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -10,9 +10,13 @@ import java100.app.dao.MemberDao;
 import java100.app.domain.Member;
 import java100.app.domain.Score;
 
-public class Membercontroller implements Controller {
+public class MemberController implements Controller {
     
-    MemberDao memberDao = new MemberDao();
+    MemberDao memberDao;
+    
+    public void setMemberDao(MemberDao memberDao) {
+        this.memberDao = memberDao;
+    }
     
     @Override
     public void destroy() {

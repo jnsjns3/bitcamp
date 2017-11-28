@@ -7,30 +7,29 @@ import java.util.ArrayList;
 
 public class DataSource  {
     
-    static {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-           
-            }catch (ClassNotFoundException e) {
-               throw new RuntimeException("jdbc 드라이버 클래스를 찾을 수 없습니다."); //이 예외가 발생하면 init()를 호출한 쪽에 예외를 던진다 (스텔스 기능)
-            }
-    }
-    
-    static ArrayList<Connection> list = new ArrayList<>();
+    private String driverClassName;
+    private String url;
+    private String username;
+    private String password;
     
     
-    synchronized public static Connection getConnection() throws SQLException {
+    private ArrayList<Connection> list = new ArrayList<>();
     
+    
+    synchronized public Connection getConnection() throws SQLException, ClassNotFoundException {
+    
+        
        if(list.size() > 0) {
            return list.remove(0); //제거한값을 리턴
        }
-        
-       return DriverManager.getConnection("jdbc:mysql://localhost:3306/studydb", "study", "1111"); 
+       Class.forName(this.driverClassName);
+       
+       return DriverManager.getConnection(this.url, this.username, this.password); 
        
     }
     
     
-     public static void returnConnection(Connection con) {
+     public void returnConnection(Connection con) {
          try {
              if(con == null) return;
              if(con.isClosed())  return;
@@ -38,7 +37,48 @@ public class DataSource  {
              
          }catch (Exception e) {}
      }
+
+
+    public String getDriverClassName() {
+        return driverClassName;
+    }
+
+
+    public void setDriverClassName(String driverClassName) {
+        this.driverClassName = driverClassName;
+    }
+
+
+    public String getUrl() {
+        return url;
+    }
+
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+
+    public String getUsername() {
+        return username;
+    }
+
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+
+    public String getPassword() {
+        return password;
+    }
+
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
     
     
+     
 
 }

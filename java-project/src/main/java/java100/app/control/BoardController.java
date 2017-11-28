@@ -1,4 +1,4 @@
-package java100.app.controll;
+package java100.app.control;
 
 import java.io.PrintWriter;
 import java.util.List;
@@ -6,10 +6,16 @@ import java.util.List;
 import java100.app.dao.BoardDao;
 import java100.app.domain.Board;
 
-public class BordController implements Controller {
+public class BoardController implements Controller {
 
-   BoardDao boardDao = new BoardDao();
-  
+   BoardDao boardDao;
+   
+   
+    public void setBoardDao(BoardDao boardDao) {
+    this.boardDao = boardDao;
+    }
+
+    
     public void destroy() {}
     
     @Override
