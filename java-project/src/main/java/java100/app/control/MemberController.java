@@ -6,10 +6,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import java100.app.annotation.Component;
 import java100.app.dao.MemberDao;
 import java100.app.domain.Member;
 import java100.app.domain.Score;
 
+@Component("/member")
 public class MemberController implements Controller {
     
     MemberDao memberDao;

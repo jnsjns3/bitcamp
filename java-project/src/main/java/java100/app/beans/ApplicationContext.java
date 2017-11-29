@@ -1,36 +1,55 @@
 package java100.app.beans;
 
-import java.io.FileReader;
-import java.io.ObjectInputStream.GetField;
-import java.lang.reflect.InvocationTargetException;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Properties;
+import java.util.List;
 import java.util.Set;
+
+import org.reflections.Reflections;
+
+import java100.app.annotation.Component;
 
 public class ApplicationContext {
 
+   
     HashMap<String, Object> pool = 
             new HashMap<>();
 
     public ApplicationContext() {}
     
-    public ApplicationContext(String propPath) {
+    
+    
+    public ApplicationContext(String basePackage) {
        
-        Properties props = new Properties();
        
-        try( FileReader in = new FileReader(propPath) ) {
-            props.load(in);
-            Set<Object> keySet =props.keySet();
-            for(Object key : keySet) {
-                String name = (String)key;
-                Class<?> clazz = Class.forName(props.getProperty(name));
+        
+        try{
+            Reflections reflections = new Reflections(basePackage);
+            Set<Class<?>> classes =reflections.getTypesAnnotatedWith(Component.class);
+           
+         
+            for(Class<?> clazz : classes) {
              
-                Object obj = clazz.newInstance();
                 
-                pool.put(name, obj);
+               Component compAnno = clazz.getAnnotation(Component.class);
+               if(compAnno == null) continue;
+               
+               Object obj = clazz.newInstance();
+               if(compAnno.value().length() == 0) {
+                   pool.put(clazz.getName(), obj); 
+               }else {
+                   pool.put(compAnno.value(), obj);
+               }
+                   
+               
+               
             }
+            
             
             injectDependency();
             
@@ -39,6 +58,8 @@ public class ApplicationContext {
         }
         
     }
+    
+   
     
     public Object getBean(String name) {
         Object bean =pool.get(name);

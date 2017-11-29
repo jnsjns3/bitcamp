@@ -10,6 +10,7 @@ import java100.app.beans.ApplicationContext;
 import java100.app.domain.Room;
 import java100.app.util.DataSource;
 
+
 public interface RoomDao {
 
     List<Room> selectList();

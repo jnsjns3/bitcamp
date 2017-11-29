@@ -7,9 +7,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
+import java100.app.annotation.Component;
 import java100.app.dao.ScoreDao;
 import java100.app.domain.Score;
 
+@Component("/score")
 public class ScoreController implements Controller {
     
     ScoreDao scoreDao;

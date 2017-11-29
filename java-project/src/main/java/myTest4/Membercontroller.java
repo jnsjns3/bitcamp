@@ -1,152 +1,194 @@
 package myTest4;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
-public class Membercontroller {
+import java100.app.dao.MemberDao;
+import java100.app.domain.Member;
+import java100.app.domain.Score;
+
+public class MemberController implements Controller {
     
-    static Scanner sc = new Scanner(System.in);
-    private ArrayList<Member> list = new ArrayList<>();
+    MemberDao memberDao;
     
-    public void excute() {
-        loop:
-            while(true) {
-           System.out.println("회원관리> ");
-           
-           String input = sc.nextLine();
+    public void setMemberDao(MemberDao memberDao) {
+        this.memberDao = memberDao;
+    }
+    
+    @Override
+    public void destroy() {
           
-           switch (input) {
-        case "add":
-            this.doAdd(); break;
+    }
+    @Override
+    public void init() {}
+    
+    
+    @Override
+    public void excute(Request request, Response response) {
+        
+         
+           switch (request.getMenuPaht()) {
+        case "/member/add":
+            this.doAdd(request, response); break;
             
-        case "list":
-            this.doList(); break;
+        case "/member/list":
+            this.doList(request, response); break;
             
-        case "view":
-            this.doView(); break;
+        case "/member/view":
+            this.doView(request, response); break;
             
-        case "update":
-            this.doUpdate(); break; 
+        case "/member/update":
+            this.doUpdate(request, response); break; 
             
-        case "delete":
-            this.doDelete(); break;
-            
-        case "main":
-            break loop;
+        case "/member/delete":
+            this.doDelete(request, response); break;
+       
               
         default:
-            System.out.println("해당 명령이 없습니다"); break;
+            response.getWriter().println("해당 명령이 없습니다"); break;
             
         }
-            }
+            
     
     }
-    private void doList(){
-        System.out.println("[회원 목록]");
-        Iterator<Member> iterator;
-        iterator = list.iterator();
-        while(iterator.hasNext()) {
-            iterator.next().print();
-        }
-    }
-    
-    private void doAdd() {
-        System.out.println("[회원 등록]");
-        Member member;
+     
+    private void doList(Request request, Response response){
+        PrintWriter out = response.getWriter();
         
-      member = new Member();
-      member.input();
-      boolean isExist = false;
-      Iterator<Member> iterator = list.iterator();
-      while(iterator.hasNext()) {
+        out.println("[회원 목록]");
+        
+        try( Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/studydb", "study", "1111");
+                PreparedStatement pstmt = con.prepareStatement("select no, name, email, regdt from ex_memb");
+                ResultSet rs = pstmt.executeQuery();) {
+            
+            
+            while(rs.next()) {
                 
-      if(iterator.next().email.equals(member.email)) {
-         isExist = true;
-          break;
-                }
-            }
-            if(isExist) {
-                System.out.println("이미 등록된 이메일 입니다.");
-            }else {
-                list.add(member);
-            }
+                out.printf("%d, %s, %s, %s\n",  
+                        rs.getInt("no"),
+                        rs.getString("name"),
+                        rs.getString("email"),
+                        rs.getDate("regdt"));
+                
+                       }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
+        }
+        
+    }
+    
+    private void doAdd(Request request, Response response) {
+        PrintWriter out = response.getWriter();
+        
+        out.println("[회원 등록]");
+        
+        try{
+            Member member = new Member();
+            member.setName(request.getParameter("name"));    
+            member.setEmail(request.getParameter("email"));
+            member.setPassword(request.getParameter("pwd")); 
+                 
+           memberDao.insert(member);
+            out.println("저장하였습니다.");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
+        }
             
           
    }
-    private void doView() {
+    private void doView(Request request, Response response) {
+        PrintWriter out = response.getWriter();
         
-        System.out.println("[회원 상세 정보]");
-        String email = Prompts.input("이메일? ");
-        Member member = null;
-       Iterator<Member> iterator;
+        out.println("[회원 상세 정보]");
        
-        iterator = list.iterator();
-        while(iterator.hasNext()) {
-            Member temp = iterator.next();
-            if(temp.email.equals(email)) {
-                member = temp;
-                break;
-            }
-        }
-        if(member == null) {
-            System.out.printf("%s 의 성적 정보가 없습니다.\n", email);
-        }else {
-            member.printDetail();
-        }
-       
-   }
-    private void doUpdate() {
-        System.out.println("[회원 정보 변경]");
-        String email = Prompts.input("이메일? ");
-        Member member = null;
-       Iterator<Member> iterator;
-       
-        iterator = list.iterator();
-        while(iterator.hasNext()) {
-            Member temp = iterator.next();
-            if(temp.email.equals(email)) {
-                member = temp;
-                break;
-            }
-        }
-        if(member == null) {
-            System.out.printf("%s 의 회원 정보가 없습니다.\n", email);
-        }else {
-           
-            member.update();
+ try {
             
+            int no = Integer.parseInt(request.getParameter("no"));
+            Member member = memberDao.selectOne(no);
+            
+            if(member != null) {
+                
+                out.printf("번호: %d\n", member.getNo());
+                out.printf("이름: %s\n", member.getName());
+                out.printf("이메일: %s\n", member.getEmail());
+                out.printf("암호: %s\n", member.getPassword());
+                out.printf("날짜: %s\n", member.getCreateDate());
+             
+           }else {
+                out.printf("'%d' 의 회원 정보가 없습니다.\n", no);
+                           
+             }
+                        
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
+        }
+            
+   }
+    
+    private void doUpdate(Request request, Response response) {
+        PrintWriter out = response.getWriter();
+        
+        out.println("[회원 정보 변경]");
+        
+        try {
+            
+            Member member = new Member();
+            member.setNo(Integer.parseInt(request.getParameter("no")));
+            member.setName(request.getParameter("name"));    
+            member.setEmail(request.getParameter("email"));
+            member.setPassword(request.getParameter("pwd"));
+            
+            memberDao.update(member);
+          
+           out.println("저장하였습니다.");
+            
+            if(memberDao.update(member) > 0) {
+                out.println("변경하였습니다.");
+            }else {
+                out.printf("'%s'의 성적 정보가 없습니다.\n", member.getNo());
+            }
+            
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
         }
        
    }
-    private void doDelete() {
-        System.out.println("[회원 삭제]");
-        String email = Prompts.input("이메일? ");
-        
-        Member member = null;
-        Iterator<Member> iterator;
-        
-         iterator = list.iterator();
-         while(iterator.hasNext()) {
-             Member temp = iterator.next();
-             if(temp.email.equals(email)) {
-                 member = temp;
-                 break;
-             }
-         }
-        if(member == null) {
-            System.out.printf("%s 의 성적 정보가 없습니다.\n", email);
-        }else {
-            if(Prompts.confirm2("정말 삭제 하시겠습니까?")) {
-                list.remove(member);
-            }else {
-                System.out.println("삭제를 취소하였습니다.");
-            }
+    private void doDelete(Request request, Response response) {
+        PrintWriter out = response.getWriter();
+          
+          try( Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/studydb", "study", "1111");
+                  PreparedStatement pstmt = con.prepareStatement("delete from ex_memb where no = ?");
+                  ) {
+              
+              pstmt.setInt(1, Integer.parseInt(request.getParameter("no")));
+              
+              if(pstmt.executeUpdate() > 0) {
+                  
+                 out.println("삭제됬습니다.");
+               
+              }else {
+                  out.printf("%s 의 회원 정보가 없습니다.\n", request.getParameter("no"));
+                             
+              }
+                          
+          } catch (Exception e) {
+              e.printStackTrace();
+              out.println(e.getMessage());
+          }
            
         }
         
-        
        
-   }
+    
     
 }

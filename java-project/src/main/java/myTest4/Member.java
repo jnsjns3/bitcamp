@@ -1,28 +1,49 @@
 package myTest4;
 
-import java.util.Scanner;
+import java.sql.Date;
 
 public class Member {
 
+    protected int no;
     protected String name;
     protected String email;
     protected String password;
+    protected Date createDate;
+   
     
     public Member() {
         
     }
-    public Member(String name, String email, String password) {
+    public Member(int no, String name, String email, Date createDate) {
+        this.no = no;
         this.name = name;
         this.email = email;
-        this.password = password;
-        
+        this.createDate = createDate;
+       
     }
+    
+   
+    
     
     @Override
     public String toString() {
-        return "Member [name=" + name + ", email=" + email + ", password=" + password + "]";
+        return "Member [no=" + no + ", name=" + name + ", email=" + email + ", password=" + password + ", createDate="
+                + createDate + "]";
+    }
+    public int getNo() {
+        return no;
+    }
+    public void setNo(int no) {
+        this.no = no;
     }
     
+    
+    public Date getCreateDate() {
+        return createDate;
+    }
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
     public String getName() {
         return name;
     }
@@ -42,58 +63,7 @@ public class Member {
         this.password = password;
     }
     
-    public void print() {
-        System.out.printf("%s, %s\n", this.name, this.password);
-        
-    }
-    public void input() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("이름?");
-        this.name = sc.nextLine();
-        
-        System.out.println("이메일?");
-        this.email = sc.nextLine();
-        System.out.println("암호?");
-        this.password = sc.nextLine();
-        System.out.println();
-      
-        
-    }
     
-    public void printDetail() {
-        
-        System.out.println("이름: " +this.name);
-        System.out.println("email: " +this.email);
-        System.out.println("암호: " +this.password);
-        
-                
-    
-}
-    public void update() {
-        Scanner sc = new Scanner(System.in);
-        
-        System.out.printf("이름? (%s) ",this.name);
-        String name = sc.nextLine();
-        if(name.isEmpty()) {
-            name = this.name;
-        }
-        System.out.printf("암호? (%s) ",this.password);
-        String passowrd = sc.nextLine();
-        if(passowrd.isEmpty()) {
-            passowrd = this.password;
-        }
-       
-        if(Prompts.confirm2("변경 하시겠습니까?(y/N) ")) {
-            this.name = name;
-            this.password = passowrd;
-            
-            System.out.println("변경 하였습니다!");
-            
-        }else{
-            System.out.println("변경을 취소하였습니다.");
-        }
-        
-        
-    }
+   
     
 }

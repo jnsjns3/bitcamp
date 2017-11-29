@@ -1,302 +1,203 @@
 package myTest3;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Scanner;
+import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.List;
 
-public class ScoreController {
+import java100.app.annotation.Component;
+import java100.app.dao.ScoreDao;
+import java100.app.domain.Score;
 
-    private ArrayList<Score> list = new ArrayList<>();
-    private ArrayList<Score2> list2 = new ArrayList<>();
+@Component("/score")
+public class ScoreController implements Controller {
     
-    static Scanner sc = new Scanner(System.in);
-    public void excute2() {
-        loop:
-            while(true) {
-           System.out.println("회원관리> ");
-           String input = sc.nextLine();
+    ScoreDao scoreDao;
+    
+    public void setScoreDao(ScoreDao scoreDao) {
+        this.scoreDao = scoreDao;
+    }
+
+    
+    @Override
+    public void destroy() {}
+    
+    @Override
+    public void init() {} 
+    
+    
+    @Override
+    public void excute(Request request, Response response) {
+        
+        
+           switch (request.getMenuPaht()) {
+        case "/score/add":
+            this.doAdd(request, response); break;
+        case "/score/list":
+            this.doList(request, response); break;
+        case "/score/view":
+            this.doView(request, response); break;
+        case "/score/update":
+            this.doUpdate(request, response); break; 
+        case "/score/delete":
+            this.doDelete(request, response); break;
           
-           switch (input) {
-        case "add":
-            this.doAdd2(); break;
-            
-        case "list":
-            this.doList2(); break;
-            
-        case "view":
-            this.doView2(); break;
-            
-        case "update":
-            this.doUpdate2(); break; 
-            
-        case "delete":
-            this.doDelete2(); break;
-            
-        case "main":
-            break loop;
-              
         default:
-            System.out.println("해당 명령이 없습니다"); break;
+            response.getWriter().println("해당 명령이 없습니다"); break;
             
         }
-            }
+            
         
     }
     
     
-    private void doDelete2() {
-        System.out.println("[학생 삭제]");
-        String email = Prompts.input("E-mail? ");
+    private void doDelete(Request request, Response response) {
+        PrintWriter out = response.getWriter();
+        out.println("[학생 삭제]");
         
-        Score2 score = null;
-        Iterator<Score2> iterator = list2.iterator();
-        while(iterator.hasNext()) {
-            Score2 temp = iterator.next();
-            if(temp.email.equals(email)) {
-                score = temp;
-                break;
-            }
-        }
-        if(score == null) {
-            System.out.printf("%s 님 의 정보가 없습니다.\n", email);
-        }else {
-            if(Prompts.confirm2("정말 삭제 하시겠습니까?")) {
-                list2.remove(score);
-            }else {
-                System.out.println("삭제를 취소하였습니다.");
-            }
-           
-        }
-        
-        
-       
-   }
-
-    private void doUpdate2() {
-        System.out.println("[회원 정보 변경]");
-       String emaile = Prompts.input("E-mail? ");
-        
-        Score2 score = null;
-        Iterator<Score2> iterator = list2.iterator();
-        while(iterator.hasNext()) {
-            Score2 temp = iterator.next();
-            if(temp.email.equals(emaile)) {
-                score = temp;
-                break;
-            }
-        }
-        if(score == null) {
-            System.out.printf("%s 님의 정보가 없습니다.\n", emaile);
-        }else {
-           
-            score.update();
-            
-        }
-       
-   }
-
-    private void doView2() {
-        System.out.println("[회원 정보]");
-        String email = Prompts.input("e-mail? ");
-        Score2 score = null;
-       Iterator<Score2> iterator;
-       
-        iterator = list2.iterator();
-        while(iterator.hasNext()) {
-            Score2 temp = iterator.next();
-            if(temp.email.equals(email)) {
-                score = temp;
-                break;
-            }
-        }
-        if(score == null) {
-            System.out.printf("%s 의 정보가 없습니다.\n", email);
-        }else {
-            score.printDetail();
-        }
-       
-   }
-
-    private void doAdd2() {
-        System.out.println("[학생 등록]");
-        Score2 score;
-        
-            score = new Score2();
-            System.out.println("이름?");
-            String name = sc.nextLine();
-            System.out.println("이메일?");
-            String email = sc.nextLine();
-            System.out.println("암호?");
-            String password = sc.nextLine();
-            
-            Iterator<Score2> iterator;
-            iterator = list2.iterator();
-           
-            boolean su = true;
-            while(iterator.hasNext()) {
-                if(email.equals(iterator.next().email)) {
-                    
-                    System.out.println("중복된 이메일 입니다. 저장되지 않습니다.");
-                    su = false;
-                }
-            }
-            
-            if(su == true) {
-                score.input(name, email, password);
-                list2.add(score);
-                System.out.println("저장되었습니다.");
-            }
+        try {
+            int no= Integer.parseInt(request.getParameter("no"));
             
             
-            
-            
-            
-            
+            if(scoreDao.delete(no) > 0) {
                 
-            
-       
-   }
-    private void doList2(){
-        System.out.println("[학생 목록]");
-        Iterator<Score2> iterator;
-        iterator = list2.iterator();
-        while(iterator.hasNext()) {
-            iterator.next().print();
-        }
-    }
-   
-    //---------------------------------------------------------------------------------------------------------
-    //---------------------------------------------------------------------------------------------------------
-    
-    public void excute() {
-        loop:
-            while(true) {
-           System.out.println("성적관리> ");
-           String input = sc.nextLine();
-          
-           switch (input) {
-        case "add":
-            this.doAdd(); break;
-            
-        case "list":
-            this.doList(); break;
-            
-        case "view":
-            this.doView(); break;
-            
-        case "update":
-            this.doUpdate(); break; 
-            
-        case "delete":
-            this.doDelete(); break;
-            
-        case "main":
-            break loop;
-              
-        default:
-            System.out.println("해당 명령이 없습니다"); break;
-            
-        }
-            }
-        
-    }
-    
-    
-    private void doDelete() {
-        System.out.println("[학생 삭제]");
-        String name = Prompts.input("이름? ");
-        
-        Score score = null;
-        Iterator<Score> iterator = list.iterator();
-        while(iterator.hasNext()) {
-            Score temp = iterator.next();
-            if(temp.name.equals(name)) {
-                score = temp;
-                break;
-            }
-        }
-        if(score == null) {
-            System.out.printf("%s 의 성적 정보가 없습니다.\n", name);
-        }else {
-            if(Prompts.confirm2("정말 삭제 하시겠습니까?")) {
-                list.remove(score);
+               out.println("삭제됬습니다.");
+             
             }else {
-                System.out.println("삭제를 취소하였습니다.");
+                out.printf("'%d' 의 성적 정보가 없습니다.\n", no);
+                           
             }
-           
+                        
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
         }
         
         
        
    }
 
-    private void doUpdate() {
-        System.out.println("[학생 정보 변경]");
-       String name = Prompts.input("이름? ");
+    private void doUpdate(Request request, Response response) {
+        PrintWriter out = response.getWriter();
         
-        Score score = null;
-        Iterator<Score> iterator = list.iterator();
-        while(iterator.hasNext()) {
-            Score temp = iterator.next();
-            if(temp.name.equals(name)) {
-                score = temp;
-                break;
-            }
-        }
-        if(score == null) {
-            System.out.printf("%s 의 성적 정보가 없습니다.\n", name);
-        }else {
-           
-            score.update();
+        out.println("[성적 변경]");
             
-        }
-       
-   }
-
-    private void doView() {
-        System.out.println("[학생 정보]");
-        String name = Prompts.input("이름? ");
-        Score score = null;
-       Iterator<Score> iterator;
-       
-        iterator = list.iterator();
-        while(iterator.hasNext()) {
-            Score temp = iterator.next();
-            if(temp.name.equals(name)) {
-                score = temp;
-                break;
-            }
-        }
-        if(score == null) {
-            System.out.printf("%s 의 성적 정보가 없습니다.\n", name);
-        }else {
-            score.printDetail();
-        }
-       
-   }
-
-    private void doAdd() {
-        System.out.println("[학생 등록]");
-        Score score;
-        while(true) {
-            score = new Score();
-            score.input();
-            list.add(score);
-          
-           if(!Prompts.confirm("계속하시겠습니까?(Y/n)")) {
-                    break;
-               
+            try {
+                
+                Score score = new Score();
+                score.setNo(Integer.parseInt(request.getParameter("no")));
+                score.setName(request.getParameter("name"));    
+                score.setKor(Integer.parseInt(request.getParameter("kor")));
+                score.setEng(Integer.parseInt(request.getParameter("eng")));
+                score.setMath(Integer.parseInt(request.getParameter("math")));
+                
+                    
+               scoreDao.update(score);
+              
+               out.println("저장하였습니다.");
+                
+                if(scoreDao.update(score) > 0) {
+                    out.println("변경하였습니다.");
+                }else {
+                    out.printf("'%s'의 성적 정보가 없습니다.\n", score.getNo());
                 }
-        }
+                
+                
+            } catch (Exception e) {
+                e.printStackTrace();
+                out.println(e.getMessage());
+            }
+        
        
    }
-    private void doList(){
-        System.out.println("[학생 목록]");
-        Iterator<Score> iterator;
-        iterator = list.iterator();
-        while(iterator.hasNext()) {
-            iterator.next().print();
+
+    private void doView(Request request, Response response) {
+        PrintWriter out = response.getWriter();
+       
+        out.println("[성적 상세 정보]");
+       
+        try {
+            
+            int no = Integer.parseInt(request.getParameter("no"));
+            Score score = scoreDao.selectOne(no);
+            
+            if(score != null) {
+                
+                out.printf("번호: %d\n", score.getNo());
+                out.printf("이름: %s\n", score.getName());
+                out.printf("국어: %d\n", score.getKor());
+                out.printf("영어: %d\n", score.getEng());
+                out.printf("수학: %d\n", score.getMath());
+                out.printf("합계: %d\n", score.getSum());
+                out.printf("평균: %.1f\n", score.getAver());
+             
+           }else {
+                out.printf("'%d' 의 성적 정보가 없습니다.\n", no);
+                           
+             }
+                        
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
         }
+   }
+    
+   
+    
+    
+    
+    
+
+    private void doAdd(Request request, Response response) {
+       
+         PrintWriter out = response.getWriter();
+         out.print("[성적 등록]");
+       
+        try{
+            Score score = new Score();
+             score.setName(request.getParameter("name"));    
+             score.setKor(Integer.parseInt(request.getParameter("kor")));
+             score.setEng(Integer.parseInt(request.getParameter("eng")));
+             score.setMath(Integer.parseInt(request.getParameter("math")));
+                 
+            scoreDao.insert(score);
+           
+            out.println("저장하였습니다.");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
+        }
+        
+        
     }
+    
+    private void doList(Request request, Response response){
+        PrintWriter out = response.getWriter();
+        out.println("[성적 목록]");
+        
+        try{
+           List<Score> list = scoreDao.selectList(); 
+            
+           for(Score score : list) {
+               out.printf("%4d, %4s, %4d, %6.1f\n",
+                                                   score.getNo(),
+                                                   score.getName(),
+                                                   score.getSum(),
+                                                   score.getAver());
+           }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            out.println(e.getMessage());
+        }
+        
+        
+    }
+    
+   
+    
     
 }

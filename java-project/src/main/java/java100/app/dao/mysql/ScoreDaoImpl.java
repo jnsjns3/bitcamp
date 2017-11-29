@@ -6,11 +6,13 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
+import java100.app.annotation.Component;
 import java100.app.dao.DaoException;
 import java100.app.dao.ScoreDao;
 import java100.app.domain.Score;
 import java100.app.util.DataSource;
 
+@Component
 public class ScoreDaoImpl implements ScoreDao {
 
     DataSource ds;
@@ -19,7 +21,8 @@ public class ScoreDaoImpl implements ScoreDao {
         this.ds = ds;
     }
 
-    
+
+
     public List<Score> selectList() {
        
         Connection con = null;

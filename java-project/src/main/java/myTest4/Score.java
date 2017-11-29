@@ -1,5 +1,4 @@
 package myTest4;
-import java.util.Scanner;
 
 //: ## 생성자와 인스턴스 메서드 도입
 //: - init() 메서드 대신 생성자를 이용하여 인스턴스를 초기화시킨다.
@@ -10,8 +9,12 @@ import java.util.Scanner;
 
 public class Score {
     
+    protected int no;
     protected String name;
-    protected int[] subjects; 
+    protected int kor;
+    protected int eng;
+    protected int math;
+    
     protected int sum;
     protected float aver;
 
@@ -19,105 +22,116 @@ public class Score {
     //: ### 생성자 
     // public으로 공개한다. 다른 패키지에서도 호출할수 있도록 변경!
     public Score(){
-        this.subjects = new int[3];
+       
     }
     
     
-    public Score(String name, int kor, int eng, int math) {
+    public Score(int no, String name, int kor, int eng, int math) {
+        this.no = no;
         this.name = name;
-        this.subjects = new int[]{kor, eng, math};
+        this.kor = kor;
+        this.eng = eng;
+        this.math = math;
+        
         
         this.compute();
     }
+
+
+    @Override
+    public String toString() {
+        return "Score [no=" + no + ", name=" + name + ", kor=" + kor + ", eng=" + eng + ", math=" + math + ", sum="
+                + sum + ", aver=" + aver + "]";
+    }
+
     
-     
+    public int getNo() {
+        return no;
+    }
+
+
+    public void setNo(int no) {
+        this.no = no;
+    }
     
-    //: ### 인스턴스 메서드
-    //: 인스턴스 데이터를 다루는 메서드는 스태틱 보다 인스턴스 메서드로 선언해야 한다.
     
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+
+    public int getKor() {
+        return kor;
+    }
+
+
+    public void setKor(int kor) {
+        this.kor = kor;
+        this.compute();
+    }
+
+
+    public int getEng() {
+        return eng;
+    }
+
+
+    public void setEng(int eng) {
+        this.eng = eng;
+        this.compute();
+    }
+
+
+    public int getMath() {
+        return math;
+    }
+
+
+    public void setMath(int math) {
+        this.math = math;
+        this.compute();
+    }
+
+
+    public int getSum() {
+        return sum;
+    }
+
+
+    public float getAver() {
+        return aver;
+    }
+
+
     // 내부에서만 사용할 메서드이기 때문에 공개하지 않는다.
     private void compute() {
-        this.sum=0;
+        this.sum=this.kor + this.eng + this.math;
         
-        for (int sub : this.subjects) {
-            this.sum += sub;
-        }
         
-        this.aver = (float)this.sum / this.subjects.length;
+        
+        this.aver = (float)this.sum / 3f;
     }
     
     //전체공개할 메서드는 public으로 공개한다.
-    public void print() {
-        System.out.printf("%-4s, %4d, %4d, %4d, %4d, %6.1f\n",  
-                this.name, 
-                this.subjects[0], 
-                this.subjects[1], 
-                this.subjects[2], 
-                this.sum, 
-                this.aver);
-    }
+    
+    
+    
     public void printDetail() {
         
             System.out.printf("%-4s, %4d, %4d, %4d, %4d, %6.1f\n",   
                     this.name, 
-                    this.subjects[0], 
-                    this.subjects[1], 
-                    this.subjects[2], 
+                    this.kor, 
+                    this.eng, 
+                    this.math, 
                     this.sum, 
                     this.aver);
         
         
     }
     
-    public void input() {
-        Scanner sc = new Scanner(System.in);
-        System.out.println("이름?");
-        this.name = sc.nextLine();
-        
-        System.out.println("국어?");
-        this.subjects[0] = sc.nextInt();
-        System.out.println("영어?");
-        this.subjects[1] = sc.nextInt();
-        System.out.println("수학?");
-        this.subjects[2] = sc.nextInt();
-        
-        this.compute();
-        
-    }
-    public void update() {
-        Scanner sc = new Scanner(System.in);
-        
-        System.out.printf("국어? (%d) ",this.subjects[0]);
-        int kor = this.subjects[0];
-        try {
-            kor = Integer.parseInt(sc.nextLine()); 
-        }catch (Exception e) {
-        }
-        
-        System.out.printf("영어? (%d) ",this.subjects[1]);
-        int eng = this.subjects[1];
-        try {
-            eng = Integer.parseInt(sc.nextLine()); 
-        }catch (Exception e) {
-        }
-        System.out.printf("수학? (%d) ",this.subjects[2]);
-        int math = this.subjects[2];
-        try {
-            math = Integer.parseInt(sc.nextLine()); 
-        }catch (Exception e) {
-        }
-        
-        if(Prompts.confirm2("변경 하시겠습니까?(y/N) ")) {
-            this.subjects[0] = kor;
-            this.subjects[1] = eng;
-            this.subjects[2] = math;
-            this.compute();
-            System.out.println("변경 하였습니다!");
-            
-        }else{
-            System.out.println("변경을 취소하였습니다.");
-        }
-        
-        
-    }
+    
 }
