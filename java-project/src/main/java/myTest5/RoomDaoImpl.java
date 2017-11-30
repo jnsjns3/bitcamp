@@ -1,4 +1,4 @@
-package java100.app.dao.mysql;
+package myTest5;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import java100.app.annotation.Component;
 import java100.app.dao.DaoException;
 import java100.app.dao.RoomDao;
 import java100.app.domain.Room;
@@ -17,10 +15,11 @@ import java100.app.util.DataSource;
 @Component
 public class RoomDaoImpl implements RoomDao {
 
-    @Autowired
 DataSource ds;
     
-
+    public void setDataSource(DataSource ds) {
+        this.ds = ds;
+    }
     
 public List<Room> selectList() {
         

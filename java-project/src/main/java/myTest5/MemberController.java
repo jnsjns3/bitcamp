@@ -1,4 +1,4 @@
-package java100.app.control;
+package myTest5;
 
 import java.io.PrintWriter;
 import java.sql.Connection;
@@ -6,19 +6,19 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import java100.app.annotation.Component;
 import java100.app.dao.MemberDao;
 import java100.app.domain.Member;
+import java100.app.domain.Score;
 
 @Component("/member")
 public class MemberController implements Controller {
     
-    @Autowired
     MemberDao memberDao;
     
-    
+    public void setMemberDao(MemberDao memberDao) {
+        this.memberDao = memberDao;
+    }
     
     @Override
     public void destroy() {

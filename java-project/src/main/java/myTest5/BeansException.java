@@ -1,4 +1,4 @@
-package java100.app.beans;
+package myTest5;
 
 public class BeansException extends RuntimeException{
 

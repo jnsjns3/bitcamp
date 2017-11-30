@@ -1,4 +1,4 @@
-package java100.app.beans;
+package myTest5;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -31,7 +31,7 @@ public class ApplicationContext {
         try{
             Reflections reflections = new Reflections(basePackage);
             Set<Class<?>> classes =reflections.getTypesAnnotatedWith(Component.class);
-           
+            
          
             for(Class<?> clazz : classes) {
              
@@ -89,10 +89,12 @@ public class ApplicationContext {
            //System.out.println(obj.getClass().getName());
            
           invokeSetter(obj);
+         
        }
        
     }
-    
+   
+   
     
     private void invokeSetter(Object obj) {
         
@@ -139,5 +141,8 @@ public class ApplicationContext {
     public void refreshBeanFactory() {
         injectDependency();
     }
+    
+   
+    
     
 }

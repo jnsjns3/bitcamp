@@ -1,16 +1,19 @@
-package java100.app.control;
+package myTest5;
 
 import java.io.PrintWriter;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import java100.app.annotation.Component;
 import java100.app.dao.DaoException;
 import java100.app.dao.RoomDao;
 import java100.app.domain.Room;
+import java100.app.domain.Score;
 
 @Component("/room")
 public class RoomController extends ArrayList<Room> implements Controller {
@@ -18,9 +21,12 @@ public class RoomController extends ArrayList<Room> implements Controller {
     private static final long serialVersionUID = 1L;
     Scanner sc = new Scanner(System.in);
     
-    @Autowired
+    
     RoomDao roomDao;
     
+    public void setRoomDao(RoomDao roomDao) {
+        this.roomDao = roomDao;
+    }
 
     @Override
     public void destroy() {

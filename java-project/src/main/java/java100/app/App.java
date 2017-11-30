@@ -5,52 +5,50 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.Scanner;
 
-import java100.app.beans.ApplicationContext;
-import java100.app.control.BoardController;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
 import java100.app.control.Controller;
-import java100.app.control.MemberController;
 import java100.app.control.Request;
 import java100.app.control.Response;
-import java100.app.control.RoomController;
 import java100.app.control.ScoreController;
-import java100.app.dao.mysql.BoardDaoImpl;
-import java100.app.dao.mysql.MemberDaoImpl;
-import java100.app.dao.mysql.RoomDaoImpl;
-import java100.app.dao.mysql.ScoreDaoImpl;
 import java100.app.util.DataSource;
 
 // 요구사항
 /*
+ Spring IoC
  
+ http://spring.io/
+
  */
 
-
+@Configuration //이 클래스가 스프링 IoC 컨테이너를 위한 설정 클래스임을 선언
+@ComponentScan("java100.app") // @Component 붙은 클래스가 어느 패키지에 있는지 표시
 public class App {
     
     ServerSocket ss;
-    ApplicationContext beanContainer;
+    // Spring IoC 컨테이너
+    AnnotationConfigApplicationContext iocContainer;
     
-    
-    void init() {
-        
-        beanContainer = new ApplicationContext("java100.app");
-        
+ // @bean 스프링 IoC 컨테이너에게 getDataSource() 메서드를 호출해서 이 메서드가 리턴한 객체를 컨테이너에 보관해달라고 표시
+    @Bean
+    DataSource getDataSource() {
         DataSource ds = new DataSource();
         ds.setDriverClassName("com.mysql.jdbc.Driver");
         ds.setUrl("jdbc:mysql://localhost:3306/studydb");
         ds.setUsername("study");
         ds.setPassword("1111");
-         
-        beanContainer.addBean("mysqlDataSource", ds);
+        return ds;
+    }
+    
+    void init() {
         
-        System.out.println("------------------------------------");
-        beanContainer.refreshBeanFactory();
+        iocContainer = new AnnotationConfigApplicationContext(App.class);
         
-        
-        
-        
+       
     }
 
     void service() throws Exception {
@@ -78,7 +76,7 @@ private void request(String command, PrintWriter out) {
     }
 
 
-    Object controller = beanContainer.getBean(menuName);
+    Object controller =  iocContainer.getBean(menuName);
     if(controller == null && controller instanceof Controller) {
         out.println("해당 명령을 지원하지 않습니다.");
         return;

@@ -1,4 +1,4 @@
-package java100.app.dao.mysql;
+package myTest5;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
+import java100.app.annotation.Component;
 import java100.app.dao.BoardDao;
 import java100.app.dao.DaoException;
 import java100.app.domain.Board;
@@ -17,11 +15,11 @@ import java100.app.util.DataSource;
 @Component
 public class BoardDaoImpl implements BoardDao {
 
-    @Autowired
 DataSource ds;
-//  스프링 IoC 컨테이너가 DataSoruce 객체를 주입하도록 표시!
     
-    
+    public void setDataSource(DataSource ds) {
+        this.ds = ds;
+    }
      
     public List<Board> selectList() {
         
