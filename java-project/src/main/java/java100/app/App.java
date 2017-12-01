@@ -14,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import java100.app.control.Controller;
 import java100.app.control.Request;
 import java100.app.control.Response;
-import java100.app.control.ScoreController;
 import java100.app.util.DataSource;
 
 // 요구사항
@@ -41,7 +40,9 @@ public class App {
         ds.setUrl("jdbc:mysql://localhost:3306/studydb");
         ds.setUsername("study");
         ds.setPassword("1111");
+        
         return ds;
+        
     }
     
     void init() {
@@ -74,7 +75,6 @@ private void request(String command, PrintWriter out) {
     if(i !=-1) {
       menuName = command.substring(0, i);
     }
-
 
     Object controller =  iocContainer.getBean(menuName);
     if(controller == null && controller instanceof Controller) {
@@ -130,14 +130,16 @@ class HttpAgent extends Thread {
     @Override
     public void run() {
         try(
+            
                 Socket socket = this.socket;
                 BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); 
                 PrintWriter out = new PrintWriter(new BufferedOutputStream(socket.getOutputStream()));
                 ){
            
                  //예) GET /score/list HTTP/1.1 (CRLF)
+                 
                     String command = in.readLine().split(" ")[1]; // /score/list 만 가져옴
-                   
+                 
                     String header = null;
                     while(true) {
                         header = in.readLine();

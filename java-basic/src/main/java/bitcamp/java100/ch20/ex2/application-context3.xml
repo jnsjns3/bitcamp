@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+<!-- 생성자 호출 II -->
+        
+    
+
+       
+       <bean class="bitcamp.java100.ch20.ex2.MyClass">
+       <constructor-arg><value>1500</value></constructor-arg>
+    </bean>
+    
+       <bean class="bitcamp.java100.ch20.ex2.MyClass">
+       <constructor-arg type="int"><value>1500</value></constructor-arg>
+    </bean>
+       
+       <bean class="bitcamp.java100.ch20.ex2.MyClass">
+       <constructor-arg type="int" index="0"><value>1500</value></constructor-arg>
+       <constructor-arg type="String" index="1"><value>홍길동</value></constructor-arg>
+    </bean>
+       
+       <bean class="bitcamp.java100.ch20.ex2.MyClass">
+       <constructor-arg type="int" index="0" value="100"/>
+       <constructor-arg type="String" index="1" value="홍길동"/>
+    </bean>
+    
+            <bean class="bitcamp.java100.ch20.ex2.MyClass2" c:name="홍길동"/>
+            <bean class="bitcamp.java100.ch20.ex2.MyClass2" c:age="100"/>
+            <bean class="bitcamp.java100.ch20.ex2.MyClass2" c:name="홍길동" c:age="100"/>
+            <bean class="bitcamp.java100.ch20.ex2.MyClass2" c:age="100" c:name="홍길동"/>
+            <bean class="bitcamp.java100.ch20.ex2.MyClass2" c:age="100" c:name="홍길동" c:working="true"/>
+            <bean class="bitcamp.java100.ch20.ex2.MyClass2" c:_1="100" c:_0="홍길동" c:_2="true"/>
+                   
+         
+</beans>

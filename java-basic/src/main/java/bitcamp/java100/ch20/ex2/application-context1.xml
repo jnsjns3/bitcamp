@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+       <!-- 객체 생성 
+       String s1 = new String()
+       -->
+        
+        <bean id="s1" class="java.lang.String"/>
+        <!-- id가 없으면 name속성을 id로 쓴다 -->
+        <bean name="s2" class="java.lang.String"/>
+        
+        <!-- <bean id="s4" name="s5 s6" class="java.lang.String"/> -->
+        <bean id="s4" name="s5 s6" class="java.lang.String"/>
+        
+        <bean name="s10 s11 s12" class="java.lang.String"/>
+        <bean class="java.lang.String"/>
+        <bean class="java.lang.String"/>
+        <bean class="java.lang.String"/>
+        
+        
+</beans>
