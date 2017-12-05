@@ -6,7 +6,7 @@ import java.util.Set;
 
 import javax.sound.sampled.Port;
 
-import java100.app.control.ScoreController;
+import java100.app.control.ScoreServlet;
 import java100.app.dao.mysql.ScoreDaoImpl;
 import java100.app.domain.Score;
 

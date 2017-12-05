@@ -29,7 +29,7 @@ public class DataSource  {
     }
     
     
-     public void returnConnection(Connection con) {
+     synchronized public void returnConnection(Connection con) {
          try {
              if(con == null) return;
              if(con.isClosed())  return;
@@ -38,7 +38,14 @@ public class DataSource  {
          }catch (Exception e) {}
      }
 
-
+     synchronized public void close() {
+         for(Connection con : list) {
+             try {con.close();} catch (Exception e) {}
+         }
+         
+     }
+     
+     
     public String getDriverClassName() {
         return driverClassName;
     }
