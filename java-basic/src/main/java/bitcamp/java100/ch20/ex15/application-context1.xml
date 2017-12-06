@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       http://www.springframework.org/schema/context/spring-context.xsd">
+
+       <!-- 에노테이션으로 의존객체 주입하기
+        @Componet 객체 자동생성
+        <context:annotation-config/>는 자동으로 내장되어 있으니 굳이 선언할 필요는 없다.
+       -->
+       
+       <!-- base-pakage는 어느 패키지에 있는 @Component를 처리할 지 설정하는 것이다.-->
+       <context:component-scan base-package="bitcamp.java100.ch20.ex15"/>
+       
+      
+        
+         
+           
+        
+</beans>

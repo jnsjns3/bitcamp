@@ -1,17 +1,24 @@
-package bitcamp.java100.ch20.ex10;
+package bitcamp.java100.ch20.ex14;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+
+@Component
 public class Car {
 
     private String model;
     private String color;
     private int capacity;
+    
+    @Autowired
     private Engine engine;
     private Map<String, String> options;
     
@@ -53,15 +60,7 @@ public class Car {
         return engine;
     }
 
-    @Autowired(required=true)
-    public void setEngine(Engine engine) {
-        this.engine = engine;
-        System.out.println("setEngine()");
-    }
-
-    public Map<String, String> getOptions() {
-        return options;
-    }
+   
 
     public void setOptions(Map<String, String> options) {
         this.options = options;

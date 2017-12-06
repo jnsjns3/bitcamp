@@ -1,11 +1,14 @@
-package bitcamp.java100.ch20.ex10;
+package bitcamp.java100.ch20.ex12;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
 public class Car {
 
@@ -53,7 +56,9 @@ public class Car {
         return engine;
     }
 
-    @Autowired(required=true)
+    //@Autowired
+    //@Qualifier(value="e2")
+    @Resource(name="e2") // @autowired + @qualifier
     public void setEngine(Engine engine) {
         this.engine = engine;
         System.out.println("setEngine()");
