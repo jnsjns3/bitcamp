@@ -22,8 +22,8 @@ public class HelloServlet implements Servlet {
  
     @Override
     public ServletConfig getServletConfig() {
-    
-        return this.config;
+        
+        return config;
     }
 
     @Override
@@ -31,7 +31,7 @@ public class HelloServlet implements Servlet {
         res.setContentType("text/plain;charset=UTF-8");
         PrintWriter out = res.getWriter();
         out.println("안녕하세요!");
-        
+        out.println("adasd");
     }
 
     @Override

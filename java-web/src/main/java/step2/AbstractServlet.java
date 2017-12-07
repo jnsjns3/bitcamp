@@ -1,15 +1,10 @@
-package step1;
+package step2;
 
-import java.io.IOException;
-
+import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.annotation.WebServlet;
 
-@WebServlet("/step1/Servlet01")
-public abstract class Servlet01 implements javax.servlet.Servlet {
+public abstract class AbstractServlet implements Servlet {
   //init()에서 받은 파라미터값을 저장하는 변수
     ServletConfig config;
     
@@ -38,11 +33,4 @@ public abstract class Servlet01 implements javax.servlet.Servlet {
        
         return this.getClass().getName();
     }
-
-    
-
-    
-    
-    
 }
-
