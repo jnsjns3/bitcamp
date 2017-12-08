@@ -1,6 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'eclipse'
+apply plugin: 'eclipse-wtp'
 apply plugin: 'war'
 
 eclipse {
@@ -57,5 +56,5 @@ dependencies {
     // Use JUnit test framework
     testCompile 'junit:junit:4.12'
 }
-mainClassName = 'App'
+
 
