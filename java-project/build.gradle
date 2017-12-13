@@ -12,7 +12,7 @@ eclipse {
     file {
       whenMerged { jdt
       }
-
+        
       // .settings/org.eclipse.jdt.core.prefs 파일에 들어갈 값 설정
       withProperties { properties ->
         properties["org.eclipse.jdt.core.compiler.codegen.targetPlatform"] = "1.8"

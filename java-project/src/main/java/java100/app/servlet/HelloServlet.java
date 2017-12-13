@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Component;
+import org.w3c.dom.DOMError;
 
 import java100.app.AppConfig;
 import java100.app.dao.ScoreDao;
@@ -29,7 +30,7 @@ public class HelloServlet extends HttpServlet {
     @Override
     public void service(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         
-        response.setContentType("text/plain;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         
             switch (request.getPathInfo()) {
         case "/hi":
@@ -39,24 +40,55 @@ public class HelloServlet extends HttpServlet {
         
       
         default:
-            response.getWriter().println("해당 명령이 없습니다"); break;
+            DoError(request, response);
             
         }
             
     
     }
+    private void DoError(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        PrintWriter out = response.getWriter();
+        
+        out.println("<!DOCTYPE html>");
+        out.println("<html>");
+        out.println(" <head>");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("</body>");
+        out.println("<h1>요청오류</h1>");
+        out.println("<p>요청하신 URL의 서비스를 찾을수 없습니다! </p>");
+        out.println("</html>");
+        
+        
+    }
     private void doHi(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         
-        out.println("[hihihi]");
        
+        out.println("<!DOCTYPE html>");
+        out.println("<html>");
+        out.println(" <head>");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("</body>");
+        out.println("<h1>Hi~~~~~</h1>");
+        out.println("<p>hihi! </p>");
+        out.println("</html>");
        
     }
     
     private void doHi2(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         PrintWriter out = response.getWriter();
         
-        out.println("[hihihihihihihi");
+        out.println("<!DOCTYPE html>");
+        out.println("<html>");
+        out.println(" <head>");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("</body>");
+        out.println("<h1>Hi22222</h1>");
+        out.println("<p>hihi~~~~~~~~~~~~~~~~~~~~~~~~~ </p>");
+        out.println("</html>");
         
        
             

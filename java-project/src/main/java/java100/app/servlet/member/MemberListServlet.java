@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.List;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java100.app.dao.MemberDao;
 import java100.app.domain.Member;
+import java100.app.domain.Score;
 import java100.app.listener.ContextLoaderListener;
 
 @SuppressWarnings("serial")
@@ -30,23 +32,51 @@ public class MemberListServlet extends HttpServlet {
     public void service(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         
          MemberDao memberDao = ContextLoaderListener.iocContainer.getBean(MemberDao.class);
-         response.setContentType("text/plain;charset=UTF-8"); 
+         response.setContentType("text/html;charset=UTF-8"); 
          PrintWriter out = response.getWriter();
         
-        out.println("[회원 목록]");
+         out.println("<!DOCTYPE html>");
+         out.println("<html>");
+         out.println("<head>");
+         
+         out.println("<link rel='stylesheet' href='../node_modules/bootstrap/dist/css/bootstrap.min.css'>");
+         
+         out.println("<style>");
+         out.println(".container {");
+         out.println(" width: 680px;");
+         out.println("}");
+         out.println("</style>");
+         out.println("<title>회원관리</title>");
+         out.println("</head>");
+         out.println("<body>");
+         out.println("<div class='container'>");
+       
+         out.println("<h1>회원 목록</h1>");
+         
+         out.println("<p><a href='add' class='btn btn-primary btn-sm'>추가</a></p>");
+         
+         out.print("<table class='table table-hover'>");
+         out.print("<thead>");
+         out.print("<tr>");
+         out.print("<th>번호</th><th>이름</th><th>이메일</th><th>가입날짜</th>");
+         out.print("</tr>");
+         out.print("</thead>");
+         out.print("<tbody>");
+      
         
-        try( Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/studydb", "study", "1111");
-                PreparedStatement pstmt = con.prepareStatement("select no, name, email, regdt from ex_memb");
-                ResultSet rs = pstmt.executeQuery();) {
-            
-            
-            while(rs.next()) {
+         try{
+             List<Member> list = memberDao.selectList(); 
+              
+             for(Member member : list) {
                 
-                out.printf("%d, %s, %s, %s\n",  
-                        rs.getInt("no"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getDate("regdt"));
+                out.printf("<tr><td>%d</td><td>"
+                        + "<a href='view?no=%d'>%s</a>"
+                        + "</td><td>%s</td><td>%s</td></tr>\n",  
+                        member.getNo(),
+                        member.getNo(),
+                        member.getName(),
+                        member.getEmail(),
+                        member.getCreateDate());
                 
                        }
             
@@ -54,10 +84,16 @@ public class MemberListServlet extends HttpServlet {
             e.printStackTrace();
             out.println(e.getMessage());
         }
+         out.print("</tbody>");
+         out.print("</table>");
+         out.print("</body>");
+         out.print("</div>");
+         
+         out.print("</html>");
         
     }
   
-       
+     
     
     
 }

@@ -18,11 +18,28 @@
         <param-value>java100.app.AppConfig</param-value>
     </context-param>
 
+
+
+
     <!-- 배치할 리스너 정보를 등록한다. -->
     <listener>
         <listener-class>java100.app.listener.ContextLoaderListener</listener-class>
     </listener>
-
+    
+      <filter>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>java100.app.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        
+    </filter>
+    
+    <filter-mapping>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <url-pattern>*</url-pattern>
+    </filter-mapping>
    
       
 </web-app>

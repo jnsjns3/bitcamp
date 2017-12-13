@@ -23,16 +23,47 @@ public class BoardListServlet extends HttpServlet {
     public void service(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
         
         BoardDao boardDao = ContextLoaderListener.iocContainer.getBean(BoardDao.class);
-        response.setContentType("text/plain;charset=UTF-8");
+        response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
-       out.println("[게시 목록]");
+        
+        out.println("<!DOCTYPE html>");
+        out.println("<html>");
+        out.println("<head>");
+        
+        out.println("<link rel='stylesheet' href='../node_modules/bootstrap/dist/css/bootstrap.min.css'>");
+        
+        out.println("<style>");
+        out.println(".container {");
+        out.println(" width: 680px;");
+        out.println("}");
+        out.println("</style>");
+        out.println("<title>게시물관리</title>");
+        out.println("</head>");
+        out.println("<body>");
+        out.println("<div class='container'>");
+      
+        out.println("<h1>게시물 목록</h1>");
+        
+        out.println("<p><a href='add' class='btn btn-primary btn-sm'>추가</a></p>");
+        
+        out.print("<table class='table table-hover'>");
+        out.print("<thead>");
+        out.print("<tr>");
+        out.print("<th>번호</th><th>제목</th><th>내용</th><th>날짜</th><th>조회수</th>");
+        out.print("</tr>");
+        out.print("</thead>");
+        out.print("<tbody>");
+       
         
         
        try{
            List<Board> list = boardDao.selectList(); 
             
            for(Board board : list) {
-               out.printf("%4d, %4s, %4s, %4s, %4d\n",
+               out.printf("<tr><td>%d</td><td>"
+                       + "<a href='view?no=%d'>%s</a>"
+                       + "</td><td>%s</td><td>%s</td><td>%d</td></tr>\n",
+                                                   board.getNo(),
                                                    board.getNo(),
                                                    board.getTitle(),
                                                    board.getContent(),
@@ -44,10 +75,17 @@ public class BoardListServlet extends HttpServlet {
             e.printStackTrace();
             out.println(e.getMessage());
         }
+       out.print("</tbody>");
+       out.print("</table>");
+       out.print("</div>");
+       out.print("</body>");
+       
+       
+       out.print("</html>");
         
     }
     
-     
+    
     
     
 }
