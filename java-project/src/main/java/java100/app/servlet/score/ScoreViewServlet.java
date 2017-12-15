@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -40,17 +41,20 @@ public class ScoreViewServlet extends HttpServlet {
         out.println("<html>");
         out.println("<head>");
         out.println("<link rel='stylesheet' href='../node_modules/bootstrap/dist/css/bootstrap.min.css'>");
+        out.println("<link rel='stylesheet' href='../css/common.css'>");
         out.println("<title>성적관리</title>");
         
         
-        out.println("<style>");
-        out.println(".container {");
-        out.println(" width: 680px;");
-        out.println("}");
-        out.println("</style>");
+        
+       
+        out.println("<title>성적관리</title>");
         out.println("</head>");
         out.println("<body>");
         out.println("<div class='container'>");
+         
+        RequestDispatcher rd = request.getRequestDispatcher("/header");
+        rd.include(request, response);
+        
         out.println("<h1>성적 상세정보</h1>");
        
        
@@ -62,7 +66,7 @@ public class ScoreViewServlet extends HttpServlet {
             Score score = scoreDao.selectOne(no);
             
             if(score != null) {
-                out.println("<form action='update' method='post'>");
+                out.println("<form action='update.jsp' method='post'>");
                 out.println("<div class='form-group row'>");
                 out.println("<label for='no' class='col-sm-2 col-form-label'>번호</label>");
                 out.println("<div class='col-sm-10'>");
@@ -70,6 +74,7 @@ public class ScoreViewServlet extends HttpServlet {
                             score.getNo());
                 out.println("</div>");
                 out.println("</div>");
+                
                 out.println("<div class='form-group row'>");
                 out.println("<label for='name' class='col-sm-2 col-form-label'>이름</label>");
                 out.println("<div class='col-sm-10'>");
@@ -77,6 +82,7 @@ public class ScoreViewServlet extends HttpServlet {
                             score.getName());
                 out.println("</div>");
                 out.println("</div>");
+                
                 out.println("<div class='form-group row'>");
                 out.println("<label for='kor' class='col-sm-2 col-form-label'>국어</label>");
                 out.println("<div class='col-sm-10'>");
@@ -131,7 +137,17 @@ public class ScoreViewServlet extends HttpServlet {
             e.printStackTrace();
             out.println(e.getMessage());
         }
+        
+        
+        rd = request.getRequestDispatcher("/footer");
+        rd.include(request, response);
+        
         out.print("</div>");
+        
+        out.print("<script src='../node_modules/jquery/dist/jquery.slim.min.js'></script>");
+        out.print("<script src='../node_modules/popper.js/dist/umd/popper.min.js'></script>");
+        out.print("<script src='../node_modules/bootstrap/dist/js/bootstrap.min.js'></script>");
+        
         out.print("</body>");
         out.print("</html>");
    }

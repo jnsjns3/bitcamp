@@ -17,23 +17,23 @@ public class ServletTest extends HttpServlet {
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
        
-        res.setContentType("text/html;charset=UTF-8");
+        memberTest mem = new memberTest();
+        
+        res.setContentType("text/plain;charset=UTF-8");
         PrintWriter out = res.getWriter();
         int ent;
         
-        int su1 = Integer.parseInt(req.getParameter("su1"));
-        int su2 = Integer.parseInt(req.getParameter("su2"));
-        String op = req.getParameter("op");
-        out.println("aaa");
+        String name = req.getParameter("name");
+        String id = req.getParameter("id");
+        String password = req.getParameter("password");
+        
+        mem.setName(name);
+        mem.setId(id);
+        mem.setPassword(password);
+        
+        System.out.println(mem.toString());
+        
+        out.println("저장되었습니다.");
        
-        
-        switch (op) {
-      
-        case "-": out.println(ent = su1 - su2);
-        break;
-        default: out.println("지원하지 않는 연산자 입니다!");
-        
-    }
-    
 }
 }

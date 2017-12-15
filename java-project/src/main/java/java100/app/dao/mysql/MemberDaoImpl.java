@@ -152,6 +152,29 @@ public Member selectOne(int no) {
     }
     
 }
+public int delete(int no) {
+    
+    Connection con = null;
+    PreparedStatement pstmt = null;
+
+    try{
+        
+        con = ds.getConnection();
+        pstmt = con.prepareStatement("delete from ex_memb where no = ?");
+        pstmt.setInt(1, no);
+        
+        return pstmt.executeUpdate();
+       
+                    
+    } catch (Exception e) {
+        throw new DaoException();
+    }finally {
+        try {pstmt.close();} catch (Exception e) {}
+        ds.returnConnection(con);
+    }
+    
+    
+}
 
 
 

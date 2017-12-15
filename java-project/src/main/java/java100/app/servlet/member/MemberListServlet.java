@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -41,19 +42,18 @@ public class MemberListServlet extends HttpServlet {
          
          out.println("<link rel='stylesheet' href='../node_modules/bootstrap/dist/css/bootstrap.min.css'>");
          
-         out.println("<style>");
-         out.println(".container {");
-         out.println(" width: 680px;");
-         out.println("}");
-         out.println("</style>");
-         out.println("<title>회원관리</title>");
+         out.println("<link rel='stylesheet' href='../css/common.css'>");
+        
          out.println("</head>");
          out.println("<body>");
          out.println("<div class='container'>");
+          
+         RequestDispatcher rd = request.getRequestDispatcher("/header");
+         rd.include(request, response);
        
          out.println("<h1>회원 목록</h1>");
          
-         out.println("<p><a href='add' class='btn btn-primary btn-sm'>추가</a></p>");
+         out.println("<p><a href='form.jsp' class='btn btn-primary btn-sm'>추가</a></p>");
          
          out.print("<table class='table table-hover'>");
          out.print("<thead>");
@@ -87,7 +87,15 @@ public class MemberListServlet extends HttpServlet {
          out.print("</tbody>");
          out.print("</table>");
          out.print("</body>");
+         
+         rd = request.getRequestDispatcher("/footer");
+         rd.include(request, response);
+         
          out.print("</div>");
+         
+         out.print("<script src='../node_modules/jquery/dist/jquery.slim.min.js'></script>");
+         out.print("<script src='../node_modules/popper.js/dist/umd/popper.min.js'></script>");
+         out.print("<script src='../node_modules/bootstrap/dist/js/bootstrap.min.js'></script>");
          
          out.print("</html>");
         

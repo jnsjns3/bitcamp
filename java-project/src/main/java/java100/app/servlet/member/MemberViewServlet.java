@@ -7,6 +7,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -35,18 +36,18 @@ public class MemberViewServlet extends HttpServlet {
         out.println("<!DOCTYPE html>");
         out.println("<html>");
         out.println("<head>");
-        out.println("<link rel='stylesheet' href='../node_modules/bootstrap/dist/css/bootstrap.min.css'>");
         out.println("<title>회원관리</title>");
+        out.println("<link rel='stylesheet' href='../node_modules/bootstrap/dist/css/bootstrap.min.css'>");
         
+        out.println("<link rel='stylesheet' href='../css/common.css'>");
         
-        out.println("<style>");
-        out.println(".container {");
-        out.println(" width: 680px;");
-        out.println("}");
-        out.println("</style>");
         out.println("</head>");
         out.println("<body>");
         out.println("<div class='container'>");
+         
+        RequestDispatcher rd = request.getRequestDispatcher("/header");
+        rd.include(request, response);
+        
         out.println("<h1>회원 상세정보</h1>");
        
  try {
@@ -120,7 +121,15 @@ public class MemberViewServlet extends HttpServlet {
             e.printStackTrace();
             out.println(e.getMessage());
         }
-         out.print("</div>");
+      rd = request.getRequestDispatcher("/footer");
+      rd.include(request, response);
+ 
+ out.print("</div>");
+ 
+ out.print("<script src='../node_modules/jquery/dist/jquery.slim.min.js'></script>");
+ out.print("<script src='../node_modules/popper.js/dist/umd/popper.min.js'></script>");
+ out.print("<script src='../node_modules/bootstrap/dist/js/bootstrap.min.js'></script>");
+         
          out.print("</body>");
          out.print("</html>");  
    }

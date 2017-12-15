@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.Servlet;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
@@ -35,18 +36,18 @@ public class BoardUpdateServlet extends HttpServlet {
         out.println("<!DOCTYPE html>");
         out.println("<html>");
         out.println("<head>");
-        out.println("<link rel='stylesheet' href='../node_modules/bootstrap/dist/css/bootstrap.min.css'>");
         out.println("<title>게시물관리</title>");
+        out.println("<link rel='stylesheet' href='../node_modules/bootstrap/dist/css/bootstrap.min.css'>");
         
-        
-        out.println("<style>");
-        out.println(".container {");
-        out.println(" width: 680px;");
-        out.println("}");
-        out.println("</style>");
+        out.println("<link rel='stylesheet' href='../css/common.css'>");
+     
         out.println("</head>");
         out.println("<body>");
         out.println("<div class='container'>");
+         
+        RequestDispatcher rd = request.getRequestDispatcher("/header");
+        rd.include(request, response);
+        
         out.println("<h1>게시물 변경</h1>");
    
     
@@ -75,7 +76,16 @@ public class BoardUpdateServlet extends HttpServlet {
         out.println(e.getMessage());
     }
     out.print("<p><a href='list' class='btn btn-primary btn-sm'>목록</a></p>");
+    
+    rd = request.getRequestDispatcher("/footer");
+    rd.include(request, response);
+    
     out.print("</div>");
+    
+    out.print("<script src='../node_modules/jquery/dist/jquery.slim.min.js'></script>");
+    out.print("<script src='../node_modules/popper.js/dist/umd/popper.min.js'></script>");
+    out.print("<script src='../node_modules/bootstrap/dist/js/bootstrap.min.js'></script>");
+    
     out.print("</body>");
     out.print("</html>");
     
