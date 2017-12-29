@@ -36,6 +36,7 @@ public class ScoreDaoImpl implements ScoreDao {
             ArrayList<Score> list = new ArrayList<>();
             
             while(rs.next()) {
+                
                 Score score = new Score(
                                         rs.getInt("no"),
                                         rs.getString("name"),

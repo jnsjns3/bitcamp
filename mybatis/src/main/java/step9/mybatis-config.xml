@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    
+    <properties resource="step9/jdbc.properties"/>
+    
+    <typeAliases>
+        <typeAlias type="step9.Board" alias="board"/>
+    </typeAliases>
+    
+  <environments default="development">
+  
+  <!-- 사용할 DBMS 연결 정보 -->
+    <environment id="development">
+    
+      
+    <!-- 트랜잭션(데이터를 변경하는 여러 SQL문을 한 단위로 다루기 위해 묶어 놓은 것)을 어떻게 관리할 것인지 설정한다. -->
+      <transactionManager type="JDBC"/>
+      
+      <!-- connection pool을 사용하겠다고 지정한다. -->
+      <dataSource type="POOLED">
+        <property name="driver" value="${dirver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${username}"/>
+        <property name="password" value="${password}"/>
+      </dataSource>
+    </environment>
+  </environments>
+  
+  <!-- environment 태그는 여러 개를 선언할 수 있다.
+       개발용 DMBS정보, 테스트용 DBMS 정보, 실제운용할 DBMS정보 등
+       여러개 만들어 놓고 사용할 id를 default 에 넣어서 사용한다 -->
+  
+  <mappers>
+    <!-- JdbcTestMapper.xml 경로 -->
+    <mapper resource="step9/JdbcTestMapper.xml"/>
+  </mappers>
+</configuration>

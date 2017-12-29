@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <!-- @Componet, @Controller, @Service, @Repository 애노테이션이 붙은 클래스를 찾아 인스턴스를 생성한다.
+         물론 의존객체도 주입해줄 것이다. -->
+    <context:component-scan base-package="java100.app.web.v02"/>
+
+    <!-- 모든 페이지 ㄴ컨트롤러에서 사용할 파라미터 변환기를 꼽는다. -->
+    <bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <property name="webBindingInitializer">
+            <bean class="java100.app.web.v02.Test12WebBindingInitializer"/>
+        </property>
+        
+        <property name="messageConverters">
+            <list>
+                <!-- application/json 데이터를 자바 객체로 변환시켜주는 컨버터 -->
+                <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"/>
+                <!-- text/plain 데이터를 자바 객체로 변환시켜주는 컨버터 -->
+                <bean class="org.springframework.http.converter.StringHttpMessageConverter"/>
+            </list>
+        </property>
+    </bean>
+   
+   
+
+</beans>

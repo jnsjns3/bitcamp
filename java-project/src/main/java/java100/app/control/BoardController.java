@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -17,11 +18,17 @@ import java100.app.domain.Board;
 @Controller
 public class BoardController {
 
-    @Autowired BoardDao boardDao;
+    //@Autowired BoardDao boardDao;
     
+   
     @RequestMapping("/board/list")
     public String list(HttpServletRequest request, HttpServletResponse response) throws Exception {
        
+        
+        ClassPathXmlApplicationContext iocContainer = new ClassPathXmlApplicationContext("java100/app/dao/application-context.xml");
+        
+        BoardDao boardDao = iocContainer.getBean(BoardDao.class);
+        
         List<Board> list = boardDao.selectList();
         
         request.setAttribute("list", list);
@@ -32,6 +39,9 @@ public class BoardController {
     @RequestMapping("/board/add")
     public String add(Board board, HttpServletRequest request, HttpServletResponse response) throws Exception {
         
+        ClassPathXmlApplicationContext iocContainer = new ClassPathXmlApplicationContext("java100/app/dao/application-context.xml");
+        
+        BoardDao boardDao = iocContainer.getBean(BoardDao.class);
          
         boardDao.insert(board);
         
@@ -40,7 +50,10 @@ public class BoardController {
     @RequestMapping("/board/delete")
     public String delete(@RequestParam("no") int no, HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-    
+        ClassPathXmlApplicationContext iocContainer = new ClassPathXmlApplicationContext("java100/app/dao/application-context.xml");
+        
+        BoardDao boardDao = iocContainer.getBean(BoardDao.class);
+        
         boardDao.delete(no);
         
         return "redirect:list.do";
@@ -53,7 +66,10 @@ public class BoardController {
     @RequestMapping("/board/update")
     public String update(Board board, HttpServletRequest request, HttpServletResponse response) throws Exception {
         
-      
+        ClassPathXmlApplicationContext iocContainer = new ClassPathXmlApplicationContext("java100/app/dao/application-context.xml");
+        
+        BoardDao boardDao = iocContainer.getBean(BoardDao.class);
+        
         boardDao.update(board);
         
         return "redirect:list.do";
@@ -61,6 +77,9 @@ public class BoardController {
     @RequestMapping("/board/view")
     public String view(@RequestParam("no") int no, HttpServletRequest request, HttpServletResponse response) throws Exception {
        
+        ClassPathXmlApplicationContext iocContainer = new ClassPathXmlApplicationContext("java100/app/dao/application-context.xml");
+        
+        BoardDao boardDao = iocContainer.getBean(BoardDao.class);
         
         Board board = boardDao.selectOne(no);
         
